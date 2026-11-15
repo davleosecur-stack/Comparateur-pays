@@ -22,7 +22,7 @@
 <style>
 :root{
   --bg:#EEF2F3; --surface:#FFFFFF; --ink:#16233B; --muted:#5B6878; --line:#D5DDE2;
-  --sea:#0E7C86; --sun:#C98A12; --rust:#B4452F; --sea-soft:#DCEFF0; --sun-soft:#F7ECD3;
+  --sea:#0E7C86; --sun:#C98A12; --rust:#B4452F; --sea-soft:#DCEFF0; --sun-soft:#F7ECD3; --rust-soft:#F6E2DC;
   color-scheme:light;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
@@ -30,13 +30,13 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#0F1724; --surface:#172234; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2A3A50;
-    --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020;
+    --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020; --rust-soft:#3D2620;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0F1724; --surface:#172234; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2A3A50;
-  --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020;
+  --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020; --rust-soft:#3D2620;
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -75,27 +75,20 @@ details.weights summary{cursor:pointer;font-weight:600}
 .wgrid input{width:100%;accent-color:var(--sea)}
 .list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 .country{background:var(--surface);border:1px solid var(--line);border-radius:12px}
-.country>summary{list-style:none;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;cursor:pointer}
 .country>summary::-webkit-details-marker{display:none}
-.stamp{width:60px;height:60px;border-radius:50%;border:2px dashed currentColor;display:grid;place-items:center;transform:rotate(-8deg);font:700 1.25rem Sora,sans-serif;position:relative}
+.stamp{flex:none;width:54px;height:54px;border-radius:50%;border:2px dashed currentColor;display:grid;place-items:center;transform:rotate(-8deg);font:700 1.15rem Sora,sans-serif;position:relative;font-variant-numeric:tabular-nums}
 .stamp::after{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid currentColor;opacity:.45}
 .s-hi{color:var(--sea)} .s-mid{color:var(--sun)} .s-lo{color:var(--rust)}
-.cname{font:600 1.1rem Sora,sans-serif;margin:0}
-.cmeta{color:var(--muted);font-size:.88rem}
-.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:8px}
-.bar{font-size:.72rem;color:var(--muted)}
-.bar i{display:block;height:5px;border-radius:3px;background:var(--line);margin-top:2px;overflow:hidden}
-.bar i b{display:block;height:100%;background:var(--sea)}
+.cname{font:600 1.08rem Sora,sans-serif;margin:0;line-height:1.25}
+.cmeta{color:var(--muted);font-size:.86rem;margin:2px 0 0}
 .rank{font:600 .85rem Sora,sans-serif;color:var(--muted)}
-.inner{padding:0 14px 14px}
+.inner{padding:0 10px 10px}
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;width:100%;font-size:.92rem}
 th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
 thead th{font-weight:600;color:var(--muted);font-size:.82rem}
 tbody tr:last-child td{border-bottom:0}
-.add{border:1px solid var(--sea);color:var(--sea);background:transparent;border-radius:999px;padding:3px 10px;font:inherit;font-size:.82rem;cursor:pointer}
-.add[aria-pressed="true"]{background:var(--sea);color:var(--surface)}
 .pill{display:inline-block;min-width:34px;padding:1px 6px;border-radius:6px;font:600 .85rem Sora,sans-serif;text-align:center}
 .p-hi{background:var(--sea-soft);color:var(--sea)} .p-mid{background:var(--sun-soft);color:var(--sun)} .p-lo{color:var(--rust)}
 .best{background:var(--sea-soft);font-weight:600}
@@ -108,11 +101,9 @@ tbody tr:last-child td{border-bottom:0}
 .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);border:0;border-radius:999px;padding:12px 20px;font:600 .95rem "Source Sans 3",sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:6}
 .fab[hidden]{display:none}
 @media (max-width:560px){
-  .bars{grid-template-columns:repeat(4,1fr)}
-  .stamp{width:52px;height:52px;font-size:1.1rem}
 }
 @media (prefers-reduced-motion:no-preference){
-  .country[open] .inner{animation:open .2s ease-out}
+  .country.opening .inner{animation:open .22s cubic-bezier(.2,.8,.2,1)}
   @keyframes open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 }
 .site-foot{text-align:center;color:var(--muted);font-size:.85rem;padding:8px 16px 96px}
@@ -131,14 +122,101 @@ dialog.sheet::backdrop{background:rgba(10,16,28,.45)}
 dialog .seg{display:flex;width:100%}
 dialog .seg button{flex:1;padding:7px 6px;font-size:.85rem}
 dialog select{width:100%;font-size:.9rem;padding:7px 10px}
+
+/* ---- polish: browser surfaces ---- */
+::selection{background:var(--sea-soft);color:var(--ink)}
+html{scrollbar-color:var(--line) transparent;accent-color:var(--sea)}
+.num,td,.pill{font-variant-numeric:tabular-nums}
+.ico{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em}
+/* ---- lead line ---- */
+.lead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:14px 2px 0;color:var(--muted);font-size:.86rem}
+.linkbtn{border:0;background:none;color:var(--sea);font:inherit;font-weight:600;cursor:pointer;padding:6px 0;display:inline-flex;align-items:center;gap:6px}
+/* ---- country card ---- */
+.list{gap:12px}
+.country{overflow:hidden;transition:box-shadow .2s ease-out}
+.country:hover{box-shadow:0 2px 10px rgba(22,35,59,.07)}
+.country>summary{list-style:none;display:block;padding:14px 14px 10px;cursor:pointer}
+.ch{display:flex;align-items:center;gap:12px}
+.cid{flex:1;min-width:0}
+.rank{align-self:flex-start;font:600 .8rem Sora,sans-serif;color:var(--muted);font-variant-numeric:tabular-nums}
+.cvisa{margin:10px 0 0;font-size:.84rem;color:var(--muted);display:flex;gap:6px;align-items:baseline}
+.cvisa strong{color:var(--ink);font-weight:600}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 14px;margin-top:12px}
+@media (min-width:720px){.metrics{grid-template-columns:repeat(8,1fr)}}
+.m{font-size:.74rem;color:var(--muted);min-width:0}
+.m div{display:flex;justify-content:space-between;gap:4px}
+.m b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.m i{display:block;height:4px;border-radius:2px;background:var(--line);margin-top:4px;overflow:hidden}
+.m i span{display:block;height:100%;border-radius:2px}
+.f-hi{background:var(--sea)} .f-mid{background:var(--sun)} .f-lo{background:var(--rust)}
+.more{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;padding-top:9px;border-top:1px solid var(--line);font-size:.84rem;font-weight:600;color:var(--sea)}
+.more .ico{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.country[open] .more .ico{transform:rotate(180deg)}
+/* ---- city list ---- */
+.cities{list-style:none;margin:0;padding:0}
+.city{padding:12px 4px;border-top:1px solid var(--line)}
+.inner .city:first-child{border-top:0}
+.crow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center}
+.cn{min-width:0}
+.nm{font-weight:600;display:flex;align-items:center;gap:6px;min-width:0}
+.nm .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nm .ico{color:var(--sea);font-size:.95rem}
+.cost{color:var(--muted);font-size:.84rem;font-variant-numeric:tabular-nums}
+.pill{min-width:38px;padding:3px 7px;font-size:.9rem}
+.p-lo{background:var(--rust-soft)}
+.add{display:inline-grid;place-items:center;box-sizing:border-box;padding:0;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--sea);background:transparent;color:var(--sea);cursor:pointer;font:inherit;font-size:1.05rem;transition:background .15s,color .15s}
+.add:hover{background:var(--sea-soft)}
+.add[aria-pressed="true"]{background:var(--sea);color:var(--surface)}
+.strip{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:9px}
+.strip span{display:flex;flex-direction:column;align-items:center;padding:3px 0 4px;border-radius:6px;font:600 .8rem Sora,sans-serif;font-variant-numeric:tabular-nums;line-height:1.2}
+.strip small{font:500 .6rem "Source Sans 3",sans-serif;color:var(--muted);letter-spacing:.01em}
+.c-hi{background:var(--sea-soft);color:var(--sea)} .c-mid{background:var(--sun-soft);color:var(--sun)} .c-lo{background:var(--rust-soft);color:var(--rust)}
+.citylist{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:2px 10px;margin-top:12px}
+.citylist .city:first-child{border-top:0}
+.rk{color:var(--muted);font:600 .74rem Sora,sans-serif;font-variant-numeric:tabular-nums;min-width:1.6em}
+/* ---- tabs badge ---- */
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--sea);color:var(--surface);font:700 .72rem Sora,sans-serif;vertical-align:1px}
+/* ---- empty ---- */
+.empty .ico{font-size:2rem;color:var(--sea);display:block;margin:0 auto 10px;stroke-width:1.4}
+.empty p{max-width:34ch;margin:0 auto 14px}
+.done.alt{background:var(--sea)}
+/* ---- passports as chips ---- */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:.88rem;cursor:pointer}
+.chips button[aria-pressed="true"]{border-color:var(--sea);background:var(--sea-soft);color:var(--ink)}
+.chips button .ico{display:none;color:var(--sea)}
+.chips button[aria-pressed="true"] .ico{display:inline}
+dialog .dots button{width:30px;height:32px}
+dialog .w{font-size:.9rem;padding:2px 0}
+.cfgbtn .ico{font-size:1.05rem;color:var(--ink)}
+.cmp-head{white-space:normal}
+.lead[hidden]{display:none}
+dialog .wbar{grid-template-columns:1fr;gap:0}
+dialog .w{padding:3px 0;border-bottom:1px solid var(--line)}
+dialog .w:last-child{border-bottom:0}
+dialog .dots button{width:32px;height:34px}
+dialog .dots button::before{width:12px;height:12px}
+.cmp-wrap td:first-child,.cmp-wrap th:first-child{white-space:normal;min-width:8.5rem;max-width:11rem;box-shadow:1px 0 0 var(--line)}
+.cmp-wrap td,.cmp-wrap th{min-width:5.8rem;padding:8px;font-size:.88rem}
+.cmp-wrap td:first-child,.cmp-wrap th:first-child{min-width:7rem;max-width:8.5rem}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-gear" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+ <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 16c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/></symbol>
+ <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
+ <symbol id="i-mount" viewBox="0 0 24 24"><path d="M3 19 9.5 8l4 6.5L16 11l5 8z"/></symbol>
+ <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+ <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+ <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0zM14 9l3-5 3 5a3 3 0 0 1-6 0zM7 4h10"/></symbol>
+</svg>
 <header class="top">
   <div class="wrap">
     <div class="titlebar">
       <h1 id="t-title"></h1>
-      <button class="cfgbtn" id="cfgOpen"><span id="t-sum"></span><span aria-hidden="true">⚙︎</span></button>
+      <button class="cfgbtn" id="cfgOpen"><span id="t-sum"></span><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg></button>
     </div>
     <div class="tabs" role="tablist">
       <button role="tab" data-view="pays"></button>
@@ -157,7 +235,7 @@ dialog select{width:100%;font-size:.9rem;padding:7px 10px}
   <p class="lbl" id="l-cur"></p>
   <div class="seg" role="group" id="g-cur"><button data-cur="CAD">CAD</button><button data-cur="USD">USD</button><button data-cur="EUR">EUR</button></div>
   <p class="lbl" id="l-pp"></p>
-  <div class="seg" role="group" id="g-pp"><button data-pp="ca"></button><button data-pp="eu"></button><button data-pp="us"></button></div>
+  <div class="chips" role="group" id="g-pp"><button data-pp="ca"></button><button data-pp="eu"></button><button data-pp="us"></button></div>
   <p class="lbl" id="l-sort"></p>
   <select id="sort"></select>
   <p class="lbl" id="t-weights"></p>
@@ -165,10 +243,11 @@ dialog select{width:100%;font-size:.9rem;padding:7px 10px}
 </dialog>
 
 <main class="wrap">
+  <div class="lead"><span id="t-lead"></span><button class="linkbtn" id="leadAdj"><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg><span></span></button></div>
   <div id="out"></div>
   <details class="notes"><summary id="t-notes"></summary><div id="notes"></div></details>
 </main>
-<footer class="site-foot"><a href="a-propos.html" id="aboutLink">À propos · confidentialité</a> <span>·</span> <button id="installBtn" class="x" hidden>Installer l’app</button></footer>
+<footer class="site-foot"><a href="a-propos.html" id="aboutLink">À propos · confidentialité</a><button id="installBtn" class="linkbtn" hidden style="margin-left:14px">Installer l’app</button></footer>
 <button class="fab" id="fab" hidden></button>
 
 <script>
@@ -278,7 +357,7 @@ const UI={
   cost:{loyer:"Loyer (centre-ville)",el:"Électricité",net:"Internet",mob:"Mobile",car:"Transport (taxi, VTC, essence)",pt:"Transport public",food:"Nourriture",hi:"Assurance habitation",ins:"Assurance santé",hc:"Frais de santé"},
   city:"Ville",index:"Indice",perMonth:"Coût / mois",add:"Comparer",added:"Ajoutée",remove:"Retirer",
   fab:n=>`Comparer ${n} villes`,range:(a,b)=>`${a} à ${b} par mois`,visa:"Visa : ",stamp:v=>`Indice global ${v} sur 100`,
-  empty:"Ajoutez jusqu’à 4 villes avec le bouton « Comparer » dans les onglets Pays ou Villes.",
+  empty:"Touchez + à côté d’une ville pour l’ajouter. Vous pouvez comparer jusqu’à 4 villes côte à côte.",browse:"Parcourir les villes",lead:(n,k)=>`${n} villes · tri : ${k}`,adjust:"Ajuster",seeCities:n=>`Voir les ${n} villes`,hide:"Masquer les villes",addA:n=>`Ajouter ${n} à la comparaison`,remA:n=>`Retirer ${n} de la comparaison`,perMo:"/ mois",
   risk:["faible","modéré","élevé","très élevé"],
   r:{country:"Indice du pays",flight:"Vol depuis Montréal",costGrp:h=>`Coût mensuel (${h==="couple"?"couple, 2-3 ch.":"seul, 1 ch."})`,total:"Total",env:"Environnement et sécurité",pm:"PM2.5 (µg/m³)",poll:"Indice de pollution",crime:"Indice de criminalité",safe:"Indice de sécurité",life:"Qualité de vie",hnote:"Note santé",costScore:"Score coût de la vie",clim:"Climat (normales annuelles)",water:"Mer, lac ou montagne",cold:"Mois le plus froid (moy.)",hot:"Mois le plus chaud (moy.)",rain:"Précipitations",mmy:"mm/an",rdays:"Jours de pluie / an",sdays:"Jours de neige / an",wx:"Intempéries",risk:"risque",climScore:"Score climat",bestPp:"Meilleur passeport",vn:"Option retraité",vf:"Conditions financières",vd:"Durée / renouvellement",vpr:"Résidence permanente",vfree:"Séjour sans visa",visaScore:"Score visa et résidence"},
   notes:["Données de référence estimées (fin 2025) à partir de sources publiques comparables : Numbeo pour les loyers, prix et sécurité, IQAir/OMS pour les PM2.5, EF EPI pour l’anglais, classements de systèmes de santé, et normales climatiques 1991–2020 des services météo nationaux. Elles ne sont pas en temps réel et varient fortement selon le quartier.",
@@ -295,7 +374,7 @@ const UI={
   cost:{loyer:"Rent (city centre)",el:"Electricity",net:"Internet",mob:"Mobile",car:"Transport (taxi, ride-hailing, fuel)",pt:"Public transit",food:"Food",hi:"Home insurance",ins:"Health insurance",hc:"Healthcare costs"},
   city:"City",index:"Index",perMonth:"Cost / month",add:"Compare",added:"Added",remove:"Remove",
   fab:n=>`Compare ${n} cities`,range:(a,b)=>`${a} to ${b} per month`,visa:"Visa: ",stamp:v=>`Overall index ${v} out of 100`,
-  empty:"Add up to 4 cities with the “Compare” button in the Countries or Cities tabs.",
+  empty:"Tap + next to a city to add it. You can compare up to 4 cities side by side.",browse:"Browse cities",lead:(n,k)=>`${n} cities · sorted by ${k}`,adjust:"Adjust",seeCities:n=>`Show ${n} cities`,hide:"Hide cities",addA:n=>`Add ${n} to comparison`,remA:n=>`Remove ${n} from comparison`,perMo:"/ month",
   risk:["low","moderate","high","very high"],
   r:{country:"Country index",flight:"Flight from Montreal",costGrp:h=>`Monthly cost (${h==="couple"?"couple, 2–3 bedrooms":"single, 1 bedroom"})`,total:"Total",env:"Environment and safety",pm:"PM2.5 (µg/m³)",poll:"Pollution index",crime:"Crime index",safe:"Safety index",life:"Quality of life",hnote:"Healthcare note",costScore:"Cost of living score",clim:"Climate (annual normals)",water:"Sea, lake or mountains",cold:"Coldest month (avg.)",hot:"Warmest month (avg.)",rain:"Precipitation",mmy:"mm/yr",rdays:"Rainy days / yr",sdays:"Snow days / yr",wx:"Severe weather",risk:"risk",climScore:"Climate score",bestPp:"Best passport",vn:"Retiree option",vf:"Financial requirements",vd:"Duration / renewal",vpr:"Permanent residence",vfree:"Visa-free stay",visaScore:"Visa and residence score"},
   notes:["Estimated reference data (late 2025) based on comparable public sources: Numbeo for rent, prices and safety, IQAir/WHO for PM2.5, EF EPI for English, healthcare system rankings, and 1991–2020 climate normals from national weather services. Figures are not real-time and vary widely by neighbourhood.",
@@ -348,12 +427,23 @@ const tone=v=>v>=70?"hi":v>=55?"mid":"lo";
 const pill=v=>`<span class="pill p-${tone(v)}">${Math.round(v)}</span>`;
 const esc=s=>s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const cname=c=>esc(tr(c.name));
-const addBtn=c=>{const on=S.cmp.includes(c.id);return `<button class="add" data-add="${c.id}" aria-pressed="${on}">${on?t.added:t.add}</button>`};
+const ico=n=>`<svg class="ico" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const WICO={"🌊":"wave","💧":"drop","⛰️":"mount"};
+const wIcon=c=>c.wt?`<span title="${esc(tr(c.wt[1]))}" aria-label="${esc(tr(c.wt[1]))}" role="img" style="display:inline-flex">${ico(WICO[c.wt[0]]||"wave")}</span>`:"";
+const addBtn=c=>{const on=S.cmp.includes(c.id),n=esc(tr(c.name));return `<button class="add" data-add="${c.id}" aria-pressed="${on}" aria-label="${on?t.remA(n):t.addA(n)}">${ico(on?"check":"plus")}</button>`};
 
 function cityRows(list,showCountry){
-  return `<div class="scroll"><table><thead><tr><th>${t.city}</th><th>${t.index}</th><th>${t.perMonth}</th>${KEYS.map(k=>`<th>${t.short[k]}</th>`).join("")}<th></th></tr></thead><tbody>${
-    list.map(c=>`<tr><td>${showCountry?c.k.f+" ":""}${cname(c)}${c.wt?` <span title="${esc(tr(c.wt[1]))}">${c.wt[0]}</span>`:""}</td><td>${pill(c.i.global)}</td><td class="num">${money(c.total)}</td>${KEYS.map(k=>`<td>${Math.round(c.i[k])}</td>`).join("")}<td>${addBtn(c)}</td></tr>`).join("")
-  }</tbody></table></div>`;
+  return `<ul class="cities">${list.map((c,i)=>`<li class="city">
+    <div class="crow">
+      <div class="cn">
+        <div class="nm">${showCountry?`<span class="rk">${i+1}</span>`:""}<span class="t">${showCountry?c.k.f+" ":""}${cname(c)}</span>${wIcon(c)}</div>
+        <div class="cost">${money(c.total)} ${t.perMo}</div>
+      </div>
+      ${pill(c.i.global)}
+      ${addBtn(c)}
+    </div>
+    <div class="strip">${KEYS.map(k=>{const v=Math.round(c.i[k]);return `<span class="c-${tone(v)}" title="${t.idx[k]}"><small>${t.short[k]}</small>${v}</span>`}).join("")}</div>
+  </li>`).join("")}</ul>`;
 }
 
 function renderChrome(){
@@ -365,10 +455,10 @@ function renderChrome(){
   document.getElementById("g-cur").setAttribute("aria-label",t.cur);
   document.getElementById("g-pp").setAttribute("aria-label",t.ppg);
   document.querySelectorAll("[data-hh]").forEach(b=>b.textContent=t.hhs[b.dataset.hh]);
-  document.querySelectorAll("[data-pp]").forEach(b=>{const P=PASSPORTS.find(x=>x.id===b.dataset.pp);b.textContent=`${P.f} ${t.ppn[P.id]}`});
+  document.querySelectorAll("[data-pp]").forEach(b=>{const P=PASSPORTS.find(x=>x.id===b.dataset.pp);b.innerHTML=`${ico("check")}${P.f} ${t.ppn[P.id]}`});
   const sel=document.getElementById("sort");sel.setAttribute("aria-label",t.sortBy);
   sel.innerHTML=[["global",t.global],...KEYS.map(k=>[k,t.idx[k]])].map(([v,l])=>`<option value="${v}">${t.sortL(l)}</option>`).join("");
-  document.querySelectorAll("[data-view]").forEach(b=>{if(b.dataset.view!=="cmp")b.textContent=t.tabs[b.dataset.view]});
+  document.querySelectorAll(".tabs [data-view]").forEach(b=>{if(b.dataset.view!=="cmp")b.textContent=t.tabs[b.dataset.view]});
   document.getElementById("t-weights").textContent=t.weights;
   const L=S.lang==="en";
   document.getElementById("t-cfg").textContent=L?"Settings":"Configuration";
@@ -391,10 +481,13 @@ function render(){
   document.querySelectorAll("[data-hh]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.hh===S.hh));
   document.querySelectorAll("[data-cur]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.cur===S.cur));
   document.querySelectorAll("[data-pp]").forEach(b=>b.setAttribute("aria-pressed",S.pps.includes(b.dataset.pp)));
-  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===S.view));
+  document.querySelectorAll(".tabs [data-view]").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===S.view));
   document.getElementById("sort").value=S.sort;
   document.getElementById("t-sum").textContent=`${t.hhs[S.hh]} · ${S.cur} · ${S.pps.map(p=>PASSPORTS.find(x=>x.id===p).f).join("")}`;
-  document.querySelector('[data-view="cmp"]').textContent=`${t.tabs.cmp} (${S.cmp.length})`;
+  document.querySelector('.tabs [data-view="cmp"]').innerHTML=`${t.tabs.cmp}${S.cmp.length?`<span class="badge">${S.cmp.length}</span>`:""}`;
+  const lead=document.querySelector(".lead");lead.hidden=S.view==="cmp";
+  document.getElementById("t-lead").textContent=t.lead(CITIES.length,(S.sort==="global"?t.global:t.idx[S.sort]).toLowerCase());
+  document.querySelector("#leadAdj span").textContent=t.adjust;
   const fab=document.getElementById("fab");
   fab.hidden=!(S.cmp.length>=2&&S.view!=="cmp");fab.textContent=t.fab(S.cmp.length);
   const out=document.getElementById("out"),key=S.sort;
@@ -405,28 +498,31 @@ function render(){
     out.innerHTML=`<div class="list">${ks.map((k,r)=>`
       <details class="country" data-id="${k.id}" ${openIds.includes(k.id)?"open":""}>
         <summary>
-          <div class="stamp s-${tone(k.i.global)}" aria-label="${t.stamp(Math.round(k.i.global))}">${Math.round(k.i.global)}</div>
-          <div>
-            <p class="cname">${k.f} ${tr(k.n)}</p>
-            <div class="cmeta">${t.range(money(k.min),money(k.max))} · ${t.hhl[S.hh]}</div>
-            <div class="cmeta">${t.visa}${vtx(k,"n")}${S.pps.length>1?` · ${ppTag(k)}`:""}</div>
-            <div class="bars">${KEYS.map(x=>`<div class="bar">${t.short[x]} ${Math.round(k.i[x])}<i><b style="width:${k.i[x]}%"></b></i></div>`).join("")}</div>
+          <div class="ch">
+            <div class="stamp s-${tone(k.i.global)}" aria-label="${t.stamp(Math.round(k.i.global))}">${Math.round(k.i.global)}</div>
+            <div class="cid">
+              <p class="cname">${k.f} ${tr(k.n)}</p>
+              <p class="cmeta num">${t.range(money(k.min),money(k.max))}</p>
+            </div>
+            <span class="rank">#${r+1}</span>
           </div>
-          <span class="rank">#${r+1}</span>
+          <p class="cvisa"><strong>${t.short.visa}</strong><span>${vtx(k,"n")}${S.pps.length>1?` · ${ppTag(k)}`:""}</span></p>
+          <div class="metrics">${KEYS.map(x=>{const v=Math.round(k.i[x]);return `<div class="m"><div><span>${t.short[x]}</span><b>${v}</b></div><i><span class="f-${tone(v)}" style="width:${v}%"></span></i></div>`}).join("")}</div>
+          <div class="more"><span class="lbl-more">${openIds.includes(k.id)?t.hide:t.seeCities(k.cs.filter(ok).length)}</span>${ico("chev")}</div>
         </summary>
         <div class="inner">${cityRows([...k.cs].filter(ok).sort((a,b)=>b.i[key]-a.i[key]),false)}</div>
       </details>`).join("")}</div>`;
   }else if(S.view==="villes"){
     const list=[...CITIES].filter(ok).sort((a,b)=>b.i[key]-a.i[key]);
-    out.innerHTML=`<div class="cmp-wrap" style="padding:6px 0">${cityRows(list,true)}</div>`;
+    out.innerHTML=`<div class="citylist">${cityRows(list,true)}</div>`;
   }else{
     const cs=S.cmp.map(id=>CITIES.find(c=>c.id===id)).filter(Boolean);
-    if(!cs.length){out.innerHTML=`<div class="cmp-wrap empty">${t.empty}</div>`;return}
+    if(!cs.length){out.innerHTML=`<div class="cmp-wrap empty">${ico("scale")}<p>${t.empty}</p><button class="done alt" data-view="villes">${t.browse}</button></div>`;return}
     const R=t.r;
     const row=(label,vals,fmt,better)=>{
-      const best=cs.length>1&&better?(better==="low"?Math.min(...vals):Math.max(...vals)):null;
+      const best=cs.length>1&&better&&new Set(vals).size>1?(better==="low"?Math.min(...vals):Math.max(...vals)):null;
       return `<tr><td>${label}</td>${vals.map(v=>`<td class="${v===best?"best":""}">${fmt(v)}</td>`).join("")}</tr>`};
-    const txt=(label,fn,w=140,left)=>`<tr><td>${label}</td>${cs.map(c=>`<td style="white-space:normal;min-width:${w}px${left?";text-align:left":""}">${fn(c)}</td>`).join("")}</tr>`;
+    const txt=(label,fn,w=96,left)=>`<tr><td>${label}</td>${cs.map(c=>`<td style="white-space:normal;min-width:${w}px${left?";text-align:left":""}">${fn(c)}</td>`).join("")}</tr>`;
     const grp=x=>`<tr><th class="group" colspan="${cs.length+1}">${x}</th></tr>`;
     const r=x=>Math.round(x);
     out.innerHTML=`<div class="cmp-wrap"><div class="scroll"><table>
@@ -445,7 +541,7 @@ function render(){
       ${row(R.safe,cs.map(c=>c.safe),r,"high")}
       ${grp(R.life)}
       ${row(t.idx.sante,cs.map(c=>c.i.sante),r,"high")}
-      ${cs.some(c=>c.k.hn)?txt(R.hnote,c=>c.k.hn?tr(c.k.hn):"—",180,true):""}
+      ${cs.some(c=>c.k.hn)?txt(R.hnote,c=>c.k.hn?tr(c.k.hn):"—",140,true):""}
       ${row(t.idx.infra,cs.map(c=>c.infra),r,"high")}
       ${row(t.idx.anglais,cs.map(c=>c.en),r,"high")}
       ${row(R.costScore,cs.map(c=>c.i.cout),r,"high")}
@@ -459,22 +555,23 @@ function render(){
       ${txt(R.wx,c=>`${tr(c.cl[6])}<br><span class="cmeta">${R.risk} ${t.risk[c.cl[5]]}</span>`)}
       ${row(R.climScore,cs.map(c=>c.i.clim),r,"high")}
       ${grp(t.idx.visa)}
-      ${txt(R.bestPp,c=>ppTag(c.k),140,true)}
-      ${[["n",R.vn],["f",R.vf],["d",R.vd],["pr",R.vpr],["free",R.vfree]].map(([f,l])=>txt(l,c=>vtx(c.k,f),160,true)).join("")}
+      ${txt(R.bestPp,c=>ppTag(c.k),96,true)}
+      ${[["n",R.vn],["f",R.vf],["d",R.vd],["pr",R.vpr],["free",R.vfree]].map(([f,l])=>txt(l,c=>vtx(c.k,f),120,true)).join("")}
       ${row(R.visaScore,cs.map(c=>c.i.visa),r,"high")}
       </tbody></table></div></div>`;
   }
 }
 
+document.addEventListener("toggle",e=>{const d=e.target;if(!d.classList||!d.classList.contains("country"))return;if(d.open){d.classList.add("opening");setTimeout(()=>d.classList.remove("opening"),260)}const k=DATA.find(x=>x.id===d.dataset.id);const l=d.querySelector(".lbl-more");if(k&&l)l.textContent=d.open?t.hide:t.seeCities(k.cs.filter(ok).length)},true);
 function closeCfg(){const d=document.getElementById("cfg");if(d.close)d.close();else d.removeAttribute("open")}
 document.getElementById("cfg").addEventListener("click",e=>{if(e.target.id!=="cfg")return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeCfg()});
 function renderWeights(){
-  document.getElementById("wgrid").innerHTML=KEYS.map(k=>`<div class="w"><span>${t.short[k]}</span><span class="dots">${[1,2,3,4,5].map(n=>`<button data-wk="${k}" data-wv="${n}" aria-label="${t.idx[k]} : ${n}/5" aria-pressed="${S.w[k]>=n}"></button>`).join("")}</span></div>`).join("");
+  document.getElementById("wgrid").innerHTML=KEYS.map(k=>`<div class="w"><span>${t.idx[k]}</span><span class="dots">${[1,2,3,4,5].map(n=>`<button data-wk="${k}" data-wv="${n}" aria-label="${t.idx[k]} : ${n}/5" aria-pressed="${S.w[k]>=n}"></button>`).join("")}</span></div>`).join("");
 }
 
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
-  if(b.id==="cfgOpen"){const d=document.getElementById("cfg");if(d.showModal)d.showModal();else d.setAttribute("open","");return}
+  if(b.id==="cfgOpen"||b.id==="leadAdj"){const d=document.getElementById("cfg");if(d.showModal)d.showModal();else d.setAttribute("open","");return}
   if(b.id==="cfgDone"){closeCfg();return}
   if(b.dataset.lang){if(S.lang===b.dataset.lang)return;S.lang=b.dataset.lang;save();renderChrome();render();return}
   if(b.dataset.wk){const k=b.dataset.wk,n=+b.dataset.wv;S.w[k]=S.w[k]===n?n-1:n;renderWeights();save();render();return}
