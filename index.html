@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Comparez 78 villes dans 14 pays : coût réel de la vie, sécurité, santé, climat, anglais et visa pour retraités. Compare 78 cities: cost of living, safety, healthcare, climate, visas.">
+<meta name="theme-color" content="#16233B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Villes">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Comparateur de villes / City Comparator">
+<meta property="og:description" content="Coût de la vie, sécurité, santé, climat et visa — 14 pays, 78 villes.">
+<meta property="og:image" content="icons/og.png">
+<title>Comparateur de villes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F3; --surface:#FFFFFF; --ink:#16233B; --muted:#5B6878; --line:#D5DDE2;
+  --sea:#0E7C86; --sun:#C98A12; --rust:#B4452F; --sea-soft:#DCEFF0; --sun-soft:#F7ECD3;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1724; --surface:#172234; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2A3A50;
+    --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1724; --surface:#172234; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2A3A50;
+  --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3,.num{font-family:Sora,system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 96px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{padding-top:10px;padding-bottom:0}
+h1{font-size:1.1rem;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:2px 0 10px;font-size:.95rem}
+.controls{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.wcap{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:8px 0 0}
+.wbar{display:grid;grid-template-columns:repeat(2,1fr);gap:0 16px}
+@media (min-width:640px){.wbar{grid-template-columns:repeat(4,1fr)}}
+.w{display:flex;justify-content:space-between;align-items:center;font-size:.8rem}
+.dots{display:flex}
+.dots button{width:20px;height:24px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:center}
+.dots button::before{content:"";width:10px;height:10px;border-radius:50%;border:1.5px solid var(--sea)}
+.dots button[aria-pressed="true"]::before{background:var(--sea)}
+details.notes{margin-top:24px;color:var(--muted);font-size:.85rem}
+details.notes summary{cursor:pointer}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink);padding:4px 9px;font:inherit;font-size:.78rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+select{font:inherit;font-size:.78rem;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.tabs{display:flex;gap:4px;margin-top:10px}
+.tabs button{flex:1;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);font:600 .9rem "Source Sans 3",sans-serif;padding:6px 4px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--sea)}
+details.weights{margin:16px 0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+details.weights summary{cursor:pointer;font-weight:600}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 20px;margin-top:10px}
+.wgrid label{display:flex;justify-content:space-between;font-size:.92rem}
+.wgrid input{width:100%;accent-color:var(--sea)}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.country{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.country>summary{list-style:none;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:14px;cursor:pointer}
+.country>summary::-webkit-details-marker{display:none}
+.stamp{width:60px;height:60px;border-radius:50%;border:2px dashed currentColor;display:grid;place-items:center;transform:rotate(-8deg);font:700 1.25rem Sora,sans-serif;position:relative}
+.stamp::after{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid currentColor;opacity:.45}
+.s-hi{color:var(--sea)} .s-mid{color:var(--sun)} .s-lo{color:var(--rust)}
+.cname{font:600 1.1rem Sora,sans-serif;margin:0}
+.cmeta{color:var(--muted);font-size:.88rem}
+.bars{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:8px}
+.bar{font-size:.72rem;color:var(--muted)}
+.bar i{display:block;height:5px;border-radius:3px;background:var(--line);margin-top:2px;overflow:hidden}
+.bar i b{display:block;height:100%;background:var(--sea)}
+.rank{font:600 .85rem Sora,sans-serif;color:var(--muted)}
+.inner{padding:0 14px 14px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+thead th{font-weight:600;color:var(--muted);font-size:.82rem}
+tbody tr:last-child td{border-bottom:0}
+.add{border:1px solid var(--sea);color:var(--sea);background:transparent;border-radius:999px;padding:3px 10px;font:inherit;font-size:.82rem;cursor:pointer}
+.add[aria-pressed="true"]{background:var(--sea);color:var(--surface)}
+.pill{display:inline-block;min-width:34px;padding:1px 6px;border-radius:6px;font:600 .85rem Sora,sans-serif;text-align:center}
+.p-hi{background:var(--sea-soft);color:var(--sea)} .p-mid{background:var(--sun-soft);color:var(--sun)} .p-lo{color:var(--rust)}
+.best{background:var(--sea-soft);font-weight:600}
+.cmp-wrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-top:16px}
+.cmp-wrap th.group{text-align:left;color:var(--ink);font:600 .9rem Sora,sans-serif;padding-top:16px;background:var(--surface)}
+.cmp-head{font:600 .95rem Sora,sans-serif;color:var(--ink)}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:.8rem;text-decoration:underline}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.note{color:var(--muted);font-size:.85rem;margin-top:28px;max-width:72ch}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);border:0;border-radius:999px;padding:12px 20px;font:600 .95rem "Source Sans 3",sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:6}
+.fab[hidden]{display:none}
+@media (max-width:560px){
+  .bars{grid-template-columns:repeat(4,1fr)}
+  .stamp{width:52px;height:52px;font-size:1.1rem}
+}
+@media (prefers-reduced-motion:no-preference){
+  .country[open] .inner{animation:open .2s ease-out}
+  @keyframes open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+}
+.site-foot{text-align:center;color:var(--muted);font-size:.85rem;padding:8px 16px 96px}
+.site-foot a{color:var(--sea)}
+.titlebar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.cfgbtn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 10px;font:inherit;font-size:.8rem;cursor:pointer;max-width:65%}
+.cfgbtn span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.cfgbtn span:last-child{font-size:1.1rem;line-height:1}
+dialog.sheet{border:0;padding:16px 18px calc(20px + env(safe-area-inset-bottom,0px));margin:auto auto 0;width:100%;max-width:min(560px,100%);border-radius:16px 16px 0 0;background:var(--surface);color:var(--ink);max-height:88vh;overflow:auto;box-sizing:border-box}
+@media (min-width:640px){dialog.sheet{margin:auto;border-radius:16px}}
+dialog.sheet::backdrop{background:rgba(10,16,28,.45)}
+.sheet-head{display:flex;justify-content:space-between;align-items:center}
+.sheet-head h2{font-size:1.05rem;margin:0}
+.done{border:0;background:var(--ink);color:var(--surface);border-radius:999px;padding:6px 14px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
+dialog .seg{display:flex;width:100%}
+dialog .seg button{flex:1;padding:7px 6px;font-size:.85rem}
+dialog select{width:100%;font-size:.9rem;padding:7px 10px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="titlebar">
+      <h1 id="t-title"></h1>
+      <button class="cfgbtn" id="cfgOpen"><span id="t-sum"></span><span aria-hidden="true">⚙︎</span></button>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-view="pays"></button>
+      <button role="tab" data-view="villes"></button>
+      <button role="tab" data-view="cmp"></button>
+    </div>
+  </div>
+</header>
+
+<dialog id="cfg" class="sheet" aria-labelledby="t-cfg">
+  <div class="sheet-head"><h2 id="t-cfg"></h2><button id="cfgDone" class="done"></button></div>
+  <p class="lbl" id="l-lang"></p>
+  <div class="seg" role="group" aria-label="Langue / Language"><button data-lang="fr" lang="fr">Français</button><button data-lang="en" lang="en">English</button></div>
+  <p class="lbl" id="l-hh"></p>
+  <div class="seg" role="group" id="g-hh"><button data-hh="solo"></button><button data-hh="couple"></button></div>
+  <p class="lbl" id="l-cur"></p>
+  <div class="seg" role="group" id="g-cur"><button data-cur="CAD">CAD</button><button data-cur="USD">USD</button><button data-cur="EUR">EUR</button></div>
+  <p class="lbl" id="l-pp"></p>
+  <div class="seg" role="group" id="g-pp"><button data-pp="ca"></button><button data-pp="eu"></button><button data-pp="us"></button></div>
+  <p class="lbl" id="l-sort"></p>
+  <select id="sort"></select>
+  <p class="lbl" id="t-weights"></p>
+  <div class="wbar" id="wgrid" role="group"></div>
+</dialog>
+
+<main class="wrap">
+  <div id="out"></div>
+  <details class="notes"><summary id="t-notes"></summary><div id="notes"></div></details>
+</main>
+<footer class="site-foot"><a href="a-propos.html" id="aboutLink">À propos · confidentialité</a> <span>·</span> <button id="installBtn" class="x" hidden>Installer l’app</button></footer>
+<button class="fab" id="fab" hidden></button>
+
+<script>
+
+// Pays : électricité, internet, mobile (par pers.), assurance santé (par pers.), frais de santé (par pers.), assurance habitation, anglais, système de santé
+// Villes : [nom, loyer 1 ch., loyer 2-3 ch., transport public/pers., transport privé, nourriture/pers., PM2.5, sécurité, infrastructures, anglais (optionnel)]
+const DATA=[
+ {id:"ca",n:"Canada",f:"🇨🇦",el:110,net:70,mob:45,ins:80,hc:40,hi:25,en:95,hs:74,c:[
+  ["Montréal",1450,2500,72,250,520,7,64,75,88],["Toronto",1900,3300,115,280,560,8,57,78],["Vancouver",2000,3500,105,280,580,6,56,80],["Québec",1150,1900,70,240,500,6,74,72,65],["Ottawa",1550,2600,95,260,540,7,66,74]]},
+ {id:"fr",n:"France",f:"🇫🇷",el:85,net:32,mob:15,ins:70,hc:25,hi:18,en:58,hs:80,c:[
+  ["Paris",1450,2900,95,150,560,13,45,86],["Lyon",950,1700,75,200,500,12,52,80],["Bordeaux",900,1600,60,200,490,10,52,76],["Nice",1050,1900,40,210,520,11,57,76],["Montpellier",850,1500,55,200,480,10,50,74],
+  ["La Rochelle",750,1300,40,220,480,8,68,72],["Biarritz",1050,1800,30,220,500,7,70,70],["Vannes",750,1250,35,220,470,8,74,68],["Toulon",800,1400,40,220,480,10,55,72],["Sète",750,1300,25,200,470,9,58,64],["Annecy",1050,1800,45,220,520,11,72,74],["Évian-les-Bains",900,1500,30,240,520,9,76,66],["Bagnères-de-Luchon",600,950,10,260,470,6,82,52]]},
+ {id:"pt",n:"Portugal",f:"🇵🇹",el:75,net:38,mob:15,ins:55,hc:25,hi:12,en:68,hs:70,c:[
+  ["Lisbonne",1450,2500,45,190,450,9,68,76],["Porto",1150,1900,45,180,430,9,68,74],["Faro",950,1600,40,220,430,8,74,66],["Coimbra",750,1250,35,190,400,8,75,66],["Braga",750,1200,35,190,400,9,74,68]]},
+ {id:"es",n:"Espagne",f:"🇪🇸",el:90,net:38,mob:15,ins:60,hc:25,hi:15,en:56,hs:78,c:[
+  ["Madrid",1350,2300,25,180,470,10,69,84],["Barcelone",1300,2300,45,170,480,12,50,84],["Valence",1000,1600,40,180,430,10,64,78],["Málaga",1050,1700,40,200,440,9,66,74],["Séville",900,1500,40,190,420,10,63,74]]},
+ {id:"it",n:"Italie",f:"🇮🇹",el:110,net:32,mob:12,ins:60,hc:30,hi:15,en:56,hs:76,c:[
+  ["Rome",1200,2100,40,180,500,13,48,74],["Milan",1500,2800,45,170,520,20,50,82],["Florence",1150,2000,40,170,500,13,57,74],["Bologne",1050,1800,40,170,480,15,57,76],["Turin",800,1400,40,170,460,18,52,76]]},
+ {id:"kr",n:"Corée du Sud",f:"🇰🇷",el:70,net:25,mob:40,ins:120,hc:20,hi:8,en:52,hs:85,c:[
+  ["Séoul",850,1700,45,160,560,19,78,92],["Busan",600,1100,40,160,500,16,78,86],["Daegu",500,950,40,160,480,18,78,82],["Incheon",600,1150,45,160,500,19,76,86],["Jeju",650,1200,40,220,540,12,80,72]]},
+ {id:"jp",n:"Japon",f:"🇯🇵",el:90,net:35,mob:25,ins:130,hc:25,hi:10,en:44,hs:88,c:[
+  ["Tokyo",1000,2100,75,120,480,10,78,95],["Osaka",700,1400,70,120,450,11,72,92],["Kyoto",750,1400,70,120,450,10,81,88],["Fukuoka",550,1100,60,120,430,12,80,88],["Sapporo",500,1000,60,140,430,8,80,86]]},
+ {id:"tw",n:"Taïwan",f:"🇹🇼",el:45,net:22,mob:15,ins:55,hc:15,hi:6,en:50,hs:86,c:[
+  ["Taipei",750,1500,45,90,420,15,84,90],["Kaohsiung",450,850,30,110,380,22,81,80],["Taichung",500,950,25,110,380,20,80,80],["Tainan",400,750,25,110,360,21,82,74],["Hsinchu",550,1000,25,120,380,17,82,82]]},
+ {id:"vn",n:"Vietnam",f:"🇻🇳",el:70,net:12,mob:8,ins:140,hc:20,hi:5,en:50,hs:52,c:[
+  ["Hô Chi Minh-Ville",600,1100,10,70,330,22,52,58],["Hanoï",550,1000,10,70,320,38,60,58],["Da Nang",450,800,8,60,300,18,72,60],["Nha Trang",400,750,8,60,300,15,70,52],["Hội An",400,800,5,60,300,16,75,48]]},
+ {id:"th",n:"Thaïlande",f:"🇹🇭",el:80,net:20,mob:12,ins:160,hc:30,hi:6,en:40,hs:68,c:[
+  ["Bangkok",650,1400,40,100,380,22,61,72],["Chiang Mai",380,700,15,80,320,27,72,56],["Phuket",650,1300,15,140,400,13,64,58],["Pattaya",450,950,15,100,350,15,58,56],["Hua Hin",450,900,10,110,340,14,70,52]]},
+ {id:"my",n:"Malaisie",f:"🇲🇾",el:45,net:30,mob:12,ins:120,hc:20,hi:6,en:72,hs:70,c:[
+  ["Kuala Lumpur",550,1000,35,110,370,18,46,78],["Penang",450,850,20,110,350,17,63,66],["Johor Bahru",380,700,20,120,330,18,42,62],["Malacca",350,600,15,120,320,16,63,58],["Kota Kinabalu",380,700,15,130,340,12,55,52]]},
+ {id:"mx",n:"Mexique",f:"🇲🇽",el:40,net:25,mob:20,ins:130,hc:30,hi:10,en:46,hs:58,c:[
+  ["Mexico",950,1800,25,120,420,21,45,68],["Guadalajara",700,1200,25,140,380,20,47,62],["Mérida",650,1150,15,150,370,14,70,58],["Puerto Vallarta",900,1600,15,140,420,12,58,52],["Querétaro",650,1100,20,150,370,17,62,62]]},
+ {id:"cr",n:"Costa Rica",f:"🇨🇷",el:70,net:50,mob:20,ins:120,hc:30,hi:15,en:55,hs:72,c:[
+  ["San José",900,1500,30,180,520,17,42,60],["Atenas",800,1300,20,200,500,10,65,50],["Tamarindo",1300,2200,10,180,560,8,58,48],["Liberia",750,1200,15,180,480,9,55,50],["Jacó",1000,1700,10,180,520,8,45,48]]},
+ {id:"cu",n:"Cuba",f:"🇨🇺",el:30,net:50,mob:20,ins:80,hc:40,hi:5,en:35,hs:45,hn:"Réputation historique forte (médecins par habitant parmi les plus nombreux au monde, bons indicateurs de santé publique). En 2026 : seulement ≈ 30 % des médicaments essentiels disponibles, chirurgies reportées faute d’électricité, exode des médecins (OMS, ONU). Les cliniques payantes pour étrangers sont mieux approvisionnées, mais évacuation vers le Canada à prévoir pour les cas graves.",c:[
+  ["La Havane",600,1100,10,180,450,20,62,38],["Varadero",600,1000,5,150,450,12,72,40],["Trinidad",400,700,5,120,420,12,72,30],["Santiago de Cuba",350,650,5,140,420,16,62,30],["Holguín",350,600,5,130,420,14,68,32]]}
+];
+// Climat : [moy. mois le plus froid °C, moy. mois le plus chaud °C, pluie mm/an, jours de pluie, jours de neige, risque 0-3, intempéries]
+const CLIM={
+"Montréal":[-9.7,21.2,1000,160,60,1,"Tempêtes de verglas, blizzards"],"Toronto":[-5.5,22.3,830,140,45,1,"Blizzards, orages"],"Vancouver":[4.1,18,1450,165,8,1,"Rivières atmosphériques, séismes"],"Québec":[-12.8,19.3,1190,170,75,1,"Blizzards, verglas"],"Ottawa":[-10.3,21,920,155,60,1,"Blizzards, verglas"],
+"Paris":[5,20.5,640,110,4,1,"Canicules"],"Lyon":[3.5,22,830,105,6,1,"Canicules, orages"],"Bordeaux":[6.5,21.5,940,115,2,1,"Canicules, orages"],"Nice":[9,23.5,730,60,1,1,"Épisodes méditerranéens"],"Montpellier":[7.5,24,630,55,1,2,"Épisodes cévenols, canicules"],"La Rochelle":[6.3,20.5,750,115,2,1,"Tempêtes atlantiques, submersion"],"Biarritz":[8.2,20.5,1480,150,1,1,"Tempêtes, fortes pluies"],"Vannes":[6.5,18.5,850,125,3,1,"Tempêtes atlantiques"],"Toulon":[9.5,24.5,670,60,0,2,"Mistral, feux de forêt, canicules"],"Sète":[8,23.5,600,55,0,2,"Épisodes méditerranéens, submersion"],"Annecy":[1.5,20.5,1250,120,20,1,"Orages, épisodes neigeux"],"Évian-les-Bains":[1.5,19.5,1050,115,15,1,"Orages"],"Bagnères-de-Luchon":[2,18,1000,115,25,1,"Neige, crues torrentielles"],
+"Lisbonne":[11.5,23.5,770,80,0,1,"Canicules, séismes"],"Porto":[9.5,20,1250,130,0,1,"Tempêtes atlantiques"],"Faro":[12,24.5,500,50,0,1,"Canicules, sécheresse"],"Coimbra":[10,22.5,900,100,0,2,"Feux de forêt, canicules"],"Braga":[8.5,21,1500,135,1,1,"Feux de forêt, fortes pluies"],
+"Madrid":[6.3,26,420,55,3,2,"Canicules extrêmes"],"Barcelone":[9.5,25,600,55,0,1,"Canicules, sécheresse"],"Valence":[11.5,26,450,45,0,2,"Inondations (DANA)"],"Málaga":[12.5,25.5,520,45,0,1,"Canicules"],"Séville":[11,28.5,540,50,0,2,"Canicules extrêmes"],
+"Rome":[8,25,800,75,1,1,"Canicules"],"Milan":[2.5,24.5,940,85,8,1,"Brouillard, orages"],"Florence":[6,25.5,850,85,2,2,"Canicules, inondations"],"Bologne":[3,25,700,80,8,2,"Inondations, canicules"],"Turin":[1.5,23,900,80,12,1,"Orages"],
+"Séoul":[-2.4,25.7,1450,105,25,1,"Mousson, vagues de froid"],"Busan":[3.2,26.1,1520,105,2,2,"Typhons"],"Daegu":[-0.5,26.8,1060,95,8,1,"Canicules"],"Incheon":[-1.9,25.2,1220,100,20,1,"Mousson"],"Jeju":[6.1,27.3,1650,125,8,2,"Typhons"],
+"Tokyo":[5.4,26.9,1600,105,3,2,"Séismes, typhons"],"Osaka":[6.2,28.8,1340,100,2,2,"Séismes, typhons, chaleur"],"Kyoto":[4.8,28.2,1520,110,6,1,"Chaleur humide estivale"],"Fukuoka":[6.9,28.1,1690,110,3,2,"Typhons, pluies diluviennes"],"Sapporo":[-3.2,22.3,1150,135,120,1,"Neige abondante"],
+"Taipei":[16.1,29.8,2400,170,0,2,"Typhons, séismes"],"Kaohsiung":[19.3,29.2,1880,95,0,2,"Typhons"],"Taichung":[16.6,28.9,1760,110,0,2,"Séismes, typhons"],"Tainan":[17.6,29.3,1800,90,0,2,"Typhons, séismes"],"Hsinchu":[15,29,1800,140,0,2,"Typhons, séismes"],
+"Hô Chi Minh-Ville":[26,29,1950,155,0,1,"Inondations urbaines"],"Hanoï":[16.4,29.2,1680,140,0,2,"Typhons, inondations"],"Da Nang":[21.5,29.4,2500,145,0,2,"Typhons, inondations"],"Nha Trang":[24,29,1360,110,0,2,"Typhons"],"Hội An":[21.5,29.5,2400,140,0,3,"Inondations, typhons"],
+"Bangkok":[27,30.5,1650,115,0,1,"Inondations, chaleur"],"Chiang Mai":[21.5,29.5,1180,110,0,2,"Smog de brûlis (mars–avril)"],"Phuket":[27.5,29,2200,165,0,1,"Mousson"],"Pattaya":[27,30,1300,110,0,1,"Inondations"],"Hua Hin":[26,29.8,1050,100,0,1,"Chaleur"],
+"Kuala Lumpur":[27,28.5,2600,180,0,1,"Inondations éclair"],"Penang":[27,28.5,2500,160,0,1,"Inondations"],"Johor Bahru":[26.5,27.8,2400,175,0,1,"Inondations"],"Malacca":[26.5,28,2100,160,0,1,"Inondations"],"Kota Kinabalu":[26.5,28,2700,160,0,1,"Fortes pluies"],
+"Mexico":[14,19,820,130,0,2,"Séismes"],"Guadalajara":[16,25,980,95,0,1,"Orages violents"],"Mérida":[23.5,29.5,1050,90,0,2,"Ouragans, chaleur"],"Puerto Vallarta":[23,28.5,1400,70,0,2,"Ouragans"],"Querétaro":[14.5,21.5,550,70,0,1,"Sécheresse"],
+"Carthagène":[27,28.5,1000,80,0,1,"Chaleur humide, fortes pluies oct.–nov."],"Santa Marta":[27.5,29,600,55,0,1,"Chaleur, sécheresse"],"Barranquilla":[27,28.5,800,60,0,1,"Crues urbaines (arroyos)"],"Medellín":[21.5,22.5,1650,180,0,1,"Glissements de terrain"],"Bogota":[13.5,14.5,1000,160,0,1,"Séismes"],
+"San José":[19.5,21,1900,170,0,1,"Séismes, glissements de terrain"],"Atenas":[22,24.5,1500,140,0,1,"Séismes"],"Tamarindo":[27,29,1500,105,0,1,"Chaleur, sécheresse saisonnière"],"Liberia":[27,29.5,1500,100,0,1,"Chaleur, sécheresse saisonnière"],"Jacó":[26.5,28,2800,170,0,1,"Fortes pluies, crues"],
+"La Havane":[22.5,28,1200,85,0,2,"Ouragans, pannes électriques"],"Varadero":[22.5,28.5,1200,80,0,2,"Ouragans"],"Trinidad":[23,28,1300,85,0,2,"Ouragans"],"Santiago de Cuba":[25,28.5,1000,65,0,2,"Ouragans, séismes"],"Holguín":[23,28,1100,80,0,2,"Ouragans"]};
+const RISK=["faible","modéré","élevé","très élevé"];
+const WATER={"Nice":["🌊","Méditerranée"],"Montpellier":["🌊","Méditerranée (10 km)"],"Bordeaux":["🌊","Garonne, océan à 50 km"],"La Rochelle":["🌊","Océan Atlantique"],"Biarritz":["🌊","Océan Atlantique"],"Vannes":["🌊","Golfe du Morbihan"],"Toulon":["🌊","Méditerranée"],"Sète":["🌊","Méditerranée, étang de Thau"],"Annecy":["💧","Lac d’Annecy"],"Évian-les-Bains":["💧","Lac Léman"],"Bagnères-de-Luchon":["⛰️","Pyrénées, lacs de montagne"],"Carthagène":["🌊","Mer des Caraïbes"],"Santa Marta":["🌊","Mer des Caraïbes"],"Barranquilla":["🌊","Mer des Caraïbes, fleuve Magdalena"],"Tamarindo":["🌊","Océan Pacifique"],"Jacó":["🌊","Océan Pacifique"],"Liberia":["🌊","Plages du Pacifique à 40 min"],"Atenas":["⛰️","Vallée centrale"],"La Havane":["🌊","Détroit de Floride"],"Varadero":["🌊","Mer des Caraïbes"],"Trinidad":["🌊","Plage Ancón à 12 km"],"Santiago de Cuba":["🌊","Baie de Santiago"]};
+const climScore=([tc,th,,rd,sn,rk])=>clamp(100-Math.max(0,12-tc)*1.6-Math.max(0,th-25)*4-Math.max(0,rd-90)*0.25-sn*0.3-rk*8);
+// Visa / résidence pour un retraité étranger (≈ 2025, à vérifier auprès des consulats).
+// Valeurs de base = passeport canadien ; clés eu / us = ce qui diffère pour ces passeports.
+const VISA={
+ ca:{s:25,n:"Pas de visa retraité — séjour de visiteur",f:"Fonds suffisants ; prolongation par fiche de visiteur",d:"6 mois, prolongeable",pr:"Entrée express ou parrainage familial, difficile après 60 ans",free:"6 mois (AVE requise)",us:{free:"6 mois (sans AVE)"}},
+ fr:{s:78,eu:true,n:"VLS-TS « Visiteur »",f:"Revenus ≈ SMIC net (≈ 1 400 €/mois/pers.), assurance santé, logement",d:"1 an, puis carte pluriannuelle",pr:"Carte de résident 10 ans après 5 ans",free:"90 j / 180 (Schengen)"},
+ pt:{s:85,eu:true,n:"Visa D7 (revenus passifs)",f:"≈ salaire minimum (≈ 900 €/mois) + 50 % pour le conjoint",d:"2 ans, puis 3 ans",pr:"Résidence permanente après 5 ans",free:"90 j / 180 (Schengen)"},
+ es:{s:72,eu:true,n:"Résidence non lucrative",f:"≈ 2 400 €/mois + ≈ 600 € par personne à charge",d:"1 an, puis 2 + 2 ans",pr:"Longue durée après 5 ans (golden visa aboli en 2025)",free:"90 j / 180 (Schengen)"},
+ it:{s:62,eu:true,n:"Visa de résidence élective",f:"≈ 31 000 €/an de revenus passifs (+ 20 % conjoint), logement sur place",d:"1 an renouvelable",pr:"Résident UE longue durée après 5 ans",free:"90 j / 180 (Schengen)"},
+ kr:{s:38,eu:{s:35,free:"90 jours (K-ETA)"},us:{s:35,free:"90 jours (K-ETA)"},n:"Pas de visa retraité — D-8 (investissement)",f:"Investissement ≥ 100 M₩ dans une entreprise (D-8)",d:"1 à 2 ans renouvelable",pr:"F-5 possible, conditions élevées",free:"6 mois sans visa (K-ETA)"},
+ jp:{s:25,eu:false,n:"Pas de visa retraité — « long séjour touristique »",f:"≈ 30 M¥ d’épargne par couple, assurance privée",d:"1 an, non menant à la résidence",pr:"Pratiquement inaccessible",free:"90 j, prolongeable à 6 mois"},
+ tw:{s:32,eu:false,n:"Pas de visa retraité — investissement ou Gold Card",f:"Investissement important ou profil professionnel qualifié",d:"1 à 3 ans",pr:"APRC après 5 ans de résidence (selon voie)",free:"90 jours"},
+ vn:{s:30,eu:false,n:"Pas de visa retraité — e-visa et sorties régulières",f:"Aucune exigence pour l’e-visa ; carte TRC via investissement",d:"e-visa 90 j entrées multiples",pr:"Très difficile",free:"Non (e-visa requis)"},
+ th:{s:70,eu:false,n:"Visa retraite O / O-A (50 ans +), ou LTR",f:"800 000 ฿ en banque ou ≈ 65 000 ฿/mois ; assurance santé (O-A)",d:"1 an renouvelable (LTR : 10 ans)",pr:"Résidence permanente très difficile",free:"60 jours (selon règles en vigueur)"},
+ my:{s:55,eu:false,n:"MM2H (révisé 2024)",f:"Dépôt fixe ≥ 150 000 $US (Silver) + achat immobilier",d:"5 ans renouvelable",pr:"Non prévue par le programme",free:"90 jours"},
+ co:{s:80,eu:false,n:"Visa M « pensionné »",f:"Pension ≥ 3 × salaire minimum colombien (≈ 1 200–1 300 $US/mois)",d:"Jusqu’à 3 ans, renouvelable",pr:"Visa R (résident) après 5 ans",free:"90 j, prolongeable à 180 j/an"},
+ cr:{s:85,eu:false,n:"Résidence « Pensionado »",f:"Pension ≥ 1 000 $US/mois à vie ; adhésion obligatoire à la CAJA (santé publique)",d:"2 ans, renouvelable",pr:"Résidence permanente après 3 ans",free:"Jusqu’à 180 jours"},
+ cu:{s:28,us:{s:12,n:"Tourisme interdit par la loi américaine",f:"Voyage limité à 12 catégories autorisées ; cartes bancaires américaines refusées",d:"Séjours courts",pr:"Très difficile",free:"Non, hors catégories autorisées"},n:"Pas de visa retraité — carte de tourisme",f:"Aucune ; résidence temporaire surtout par mariage ou investissement",d:"90 j, prolongeable à 180 j",pr:"Très difficile",free:"Carte de tourisme (90 j)"},
+ mx:{s:75,eu:false,n:"Résident temporaire ou permanent (solvabilité)",f:"≈ 4 300 $US/mois de revenus ou ≈ 70 000 $US d’épargne (seuils variables)",d:"1 an, puis 3 ans",pr:"Permanent après 4 ans, ou dès le départ pour retraité à pension élevée",free:"Jusqu’à 180 jours"}
+};
+// Passeports : home = pays où le titulaire est citoyen ou circule librement
+const PASSPORTS=[{id:"ca",n:"Canadien",f:"🇨🇦",home:["ca"]},{id:"eu",n:"Français / UE",f:"🇫🇷",home:["fr","pt","es","it"]},{id:"us",n:"Américain",f:"🇺🇸",home:[]}];
+const visaFor=(k,p)=>{const P=PASSPORTS.find(x=>x.id===p);
+  if(P.home.includes(k.id))return{s:100,n:k.id==="fr"||p!=="eu"?"Citoyen":"Citoyen UE (libre circulation)",f:"Aucune",d:"Illimitée",pr:"Sans objet",free:"Illimité",p};
+  const b=VISA[k.id],o=b[p]&&typeof b[p]==="object"?b[p]:{};return{...b,...o,p}};
+const bestVisa=k=>S.pps.map(p=>visaFor(k,p)).sort((a,b)=>b.s-a.s)[0];
+// Vol depuis Montréal : [heures, texte] — défaut par pays, précisé par ville
+const FLYC={ca:[1.5,"Vol intérieur"],fr:[7,"≈ 7 h, direct (Paris, Nice, Lyon, Bordeaux selon saison)"],pt:[6.5,"≈ 6 h 30 direct (Lisbonne, Porto)"],es:[7.5,"≈ 7 h 30, direct vers Madrid et Barcelone"],it:[8.5,"≈ 8 h 30, direct vers Rome"],kr:[15,"≈ 15 h, escale"],jp:[13,"≈ 13 h direct (Tokyo)"],tw:[17,"≈ 17 h, escale"],vn:[21,"≈ 21 h, escale"],th:[20,"≈ 20 h, escale"],my:[22,"≈ 22 h, escale"],mx:[6,"≈ 5 à 7 h"],co:[7,"≈ 7 h, escale"],cr:[5.3,"≈ 5 h 15"],cu:[3.5,"≈ 3 h 30 direct"]};
+const FLY={"Montréal":[0,"—"],"Toronto":[1.2,"≈ 1 h 15 direct"],"Ottawa":[1,"≈ 1 h, ou 2 h de train"],"Québec":[1,"≈ 1 h, ou 3 h de route"],"Vancouver":[5.5,"≈ 5 h 30 direct"],"Mexico":[5.2,"≈ 5 h 15 direct"],"Mérida":[4.5,"≈ 4 h 30 direct (saisonnier)"],"Puerto Vallarta":[5.8,"≈ 5 h 45 direct (saisonnier)"],"Guadalajara":[7,"≈ 7 h, escale"],"Querétaro":[7,"≈ 7 h, escale"],"Carthagène":[5,"≈ 5 h direct (Air Transat, toute l’année)"],"Santa Marta":[6.5,"≈ 6 h 30, escale"],"Barranquilla":[6.5,"≈ 6 h 30, escale"],"Medellín":[7,"≈ 7 h direct via Carthagène (dès l’été 2026)"],"Bogota":[7.5,"≈ 7 h 30, escale"],"San José":[5.3,"≈ 5 h 15 direct"],"Atenas":[5.3,"≈ 5 h 15 vers San José, puis 40 min de route"],"Liberia":[5,"≈ 5 h direct (saisonnier)"],"Tamarindo":[5,"≈ 5 h vers Liberia, puis 1 h de route"],"Jacó":[5.3,"≈ 5 h 15 vers San José, puis 1 h 30 de route"],"La Havane":[3.5,"≈ 3 h 30 direct"],"Varadero":[3.5,"≈ 3 h 30 direct"],"Trinidad":[3.5,"≈ 3 h 30 vers Santa Clara, puis 2 h de route"],"Santiago de Cuba":[4.2,"≈ 4 h 15 direct (saisonnier)"],"Holguín":[4,"≈ 4 h direct"]};
+// Traductions anglaises des données (clé = texte français)
+const EN={
+"Tempêtes de verglas, blizzards":"Ice storms, blizzards","Blizzards, orages":"Blizzards, thunderstorms","Rivières atmosphériques, séismes":"Atmospheric rivers, earthquakes","Blizzards, verglas":"Blizzards, freezing rain","Canicules":"Heat waves","Canicules, orages":"Heat waves, thunderstorms","Épisodes méditerranéens":"Mediterranean storm events","Épisodes cévenols, canicules":"Flash-flood storms, heat waves","Tempêtes atlantiques, submersion":"Atlantic storms, coastal flooding","Tempêtes, fortes pluies":"Storms, heavy rain","Tempêtes atlantiques":"Atlantic storms","Mistral, feux de forêt, canicules":"Mistral wind, wildfires, heat waves","Épisodes méditerranéens, submersion":"Mediterranean storms, coastal flooding","Orages, épisodes neigeux":"Thunderstorms, snow events","Orages":"Thunderstorms","Neige, crues torrentielles":"Snow, flash floods","Canicules, séismes":"Heat waves, earthquakes","Canicules, sécheresse":"Heat waves, drought","Feux de forêt, canicules":"Wildfires, heat waves","Feux de forêt, fortes pluies":"Wildfires, heavy rain","Canicules extrêmes":"Extreme heat waves","Inondations (DANA)":"Floods (DANA storms)","Brouillard, orages":"Fog, thunderstorms","Canicules, inondations":"Heat waves, floods","Inondations, canicules":"Floods, heat waves","Mousson, vagues de froid":"Monsoon, cold snaps","Typhons":"Typhoons","Mousson":"Monsoon","Séismes, typhons":"Earthquakes, typhoons","Séismes, typhons, chaleur":"Earthquakes, typhoons, heat","Chaleur humide estivale":"Humid summer heat","Typhons, pluies diluviennes":"Typhoons, torrential rain","Neige abondante":"Heavy snowfall","Typhons, séismes":"Typhoons, earthquakes","Inondations urbaines":"Urban flooding","Typhons, inondations":"Typhoons, floods","Inondations, typhons":"Floods, typhoons","Inondations, chaleur":"Floods, heat","Smog de brûlis (mars–avril)":"Burning-season smog (March–April)","Inondations":"Floods","Chaleur":"Heat","Inondations éclair":"Flash floods","Fortes pluies":"Heavy rain","Séismes":"Earthquakes","Orages violents":"Severe thunderstorms","Ouragans, chaleur":"Hurricanes, heat","Ouragans":"Hurricanes","Sécheresse":"Drought","Séismes, glissements de terrain":"Earthquakes, landslides","Chaleur, sécheresse saisonnière":"Heat, seasonal drought","Fortes pluies, crues":"Heavy rain, floods","Ouragans, pannes électriques":"Hurricanes, power outages","Ouragans, séismes":"Hurricanes, earthquakes",
+"Méditerranée":"Mediterranean Sea","Méditerranée (10 km)":"Mediterranean (10 km)","Garonne, océan à 50 km":"Garonne river, ocean 50 km away","Océan Atlantique":"Atlantic Ocean","Golfe du Morbihan":"Gulf of Morbihan","Méditerranée, étang de Thau":"Mediterranean, Thau lagoon","Lac d’Annecy":"Lake Annecy","Lac Léman":"Lake Geneva","Pyrénées, lacs de montagne":"Pyrenees, mountain lakes","Mer des Caraïbes":"Caribbean Sea","Océan Pacifique":"Pacific Ocean","Plages du Pacifique à 40 min":"Pacific beaches 40 min away","Vallée centrale":"Central Valley","Détroit de Floride":"Straits of Florida","Plage Ancón à 12 km":"Ancón beach, 12 km away","Baie de Santiago":"Santiago Bay",
+"≈ 1 h 15 direct":"≈ 1 h 15 nonstop","≈ 1 h, ou 2 h de train":"≈ 1 h, or 2 h by train","≈ 1 h, ou 3 h de route":"≈ 1 h, or 3 h by car","≈ 5 h 30 direct":"≈ 5 h 30 nonstop","≈ 5 h 15 direct":"≈ 5 h 15 nonstop","≈ 4 h 30 direct (saisonnier)":"≈ 4 h 30 nonstop (seasonal)","≈ 5 h 45 direct (saisonnier)":"≈ 5 h 45 nonstop (seasonal)","≈ 7 h, escale":"≈ 7 h, one stop","≈ 5 h 15 vers San José, puis 40 min de route":"≈ 5 h 15 to San José, then 40 min by car","≈ 5 h direct (saisonnier)":"≈ 5 h nonstop (seasonal)","≈ 5 h vers Liberia, puis 1 h de route":"≈ 5 h to Liberia, then 1 h by car","≈ 5 h 15 vers San José, puis 1 h 30 de route":"≈ 5 h 15 to San José, then 1 h 30 by car","≈ 3 h 30 direct":"≈ 3 h 30 nonstop","≈ 3 h 30 vers Santa Clara, puis 2 h de route":"≈ 3 h 30 to Santa Clara, then 2 h by car","≈ 4 h 15 direct (saisonnier)":"≈ 4 h 15 nonstop (seasonal)","≈ 4 h direct":"≈ 4 h nonstop","Vol intérieur":"Domestic flight","≈ 7 h, direct (Paris, Nice, Lyon, Bordeaux selon saison)":"≈ 7 h, nonstop (Paris, Nice, Lyon, Bordeaux depending on season)","≈ 6 h 30 direct (Lisbonne, Porto)":"≈ 6 h 30 nonstop (Lisbon, Porto)","≈ 7 h 30, direct vers Madrid et Barcelone":"≈ 7 h 30, nonstop to Madrid and Barcelona","≈ 8 h 30, direct vers Rome":"≈ 8 h 30, nonstop to Rome","≈ 15 h, escale":"≈ 15 h, one stop","≈ 13 h direct (Tokyo)":"≈ 13 h nonstop (Tokyo)","≈ 17 h, escale":"≈ 17 h, one stop","≈ 21 h, escale":"≈ 21 h, one stop","≈ 20 h, escale":"≈ 20 h, one stop","≈ 22 h, escale":"≈ 22 h, one stop","≈ 5 à 7 h":"≈ 5 to 7 h",
+"Pas de visa retraité — séjour de visiteur":"No retiree visa — visitor stay","Fonds suffisants ; prolongation par fiche de visiteur":"Sufficient funds; extension via a visitor record","6 mois, prolongeable":"6 months, extendable","Entrée express ou parrainage familial, difficile après 60 ans":"Express Entry or family sponsorship, hard after 60","6 mois (AVE requise)":"6 months (eTA required)","6 mois (sans AVE)":"6 months (no eTA)","VLS-TS « Visiteur »":"VLS-TS “Visitor” long-stay visa","Revenus ≈ SMIC net (≈ 1 400 €/mois/pers.), assurance santé, logement":"Income ≈ net minimum wage (≈ €1,400/month/person), health insurance, housing","1 an, puis carte pluriannuelle":"1 year, then multi-year card","Carte de résident 10 ans après 5 ans":"10-year resident card after 5 years","90 j / 180 (Schengen)":"90 days / 180 (Schengen)","Visa D7 (revenus passifs)":"D7 visa (passive income)","≈ salaire minimum (≈ 900 €/mois) + 50 % pour le conjoint":"≈ minimum wage (≈ €900/month) + 50% for a spouse","2 ans, puis 3 ans":"2 years, then 3 years","Résidence permanente après 5 ans":"Permanent residence after 5 years","Résidence non lucrative":"Non-lucrative residence","≈ 2 400 €/mois + ≈ 600 € par personne à charge":"≈ €2,400/month + ≈ €600 per dependant","1 an, puis 2 + 2 ans":"1 year, then 2 + 2 years","Longue durée après 5 ans (golden visa aboli en 2025)":"Long-term residence after 5 years (golden visa abolished in 2025)","Visa de résidence élective":"Elective residence visa","≈ 31 000 €/an de revenus passifs (+ 20 % conjoint), logement sur place":"≈ €31,000/year passive income (+20% for a spouse), local housing","1 an renouvelable":"1 year, renewable","Résident UE longue durée après 5 ans":"EU long-term resident after 5 years","Pas de visa retraité — D-8 (investissement)":"No retiree visa — D-8 (investment)","Investissement ≥ 100 M₩ dans une entreprise (D-8)":"Business investment ≥ ₩100M (D-8)","1 à 2 ans renouvelable":"1 to 2 years, renewable","F-5 possible, conditions élevées":"F-5 possible, demanding requirements","6 mois sans visa (K-ETA)":"6 months visa-free (K-ETA)","90 jours (K-ETA)":"90 days (K-ETA)","Pas de visa retraité — « long séjour touristique »":"No retiree visa — “long-stay sightseeing”","≈ 30 M¥ d’épargne par couple, assurance privée":"≈ ¥30M savings per couple, private insurance","1 an, non menant à la résidence":"1 year, no path to residence","Pratiquement inaccessible":"Practically out of reach","90 j, prolongeable à 6 mois":"90 days, extendable to 6 months","Pas de visa retraité — investissement ou Gold Card":"No retiree visa — investment or Gold Card","Investissement important ou profil professionnel qualifié":"Significant investment or qualified professional profile","1 à 3 ans":"1 to 3 years","APRC après 5 ans de résidence (selon voie)":"APRC after 5 years of residence (depending on route)","90 jours":"90 days","Pas de visa retraité — e-visa et sorties régulières":"No retiree visa — e-visa and regular border runs","Aucune exigence pour l’e-visa ; carte TRC via investissement":"No requirement for the e-visa; TRC card via investment","e-visa 90 j entrées multiples":"90-day multiple-entry e-visa","Très difficile":"Very difficult","Non (e-visa requis)":"No (e-visa required)","Visa retraite O / O-A (50 ans +), ou LTR":"Retirement visa O / O-A (50+), or LTR","800 000 ฿ en banque ou ≈ 65 000 ฿/mois ; assurance santé (O-A)":"฿800,000 in the bank or ≈ ฿65,000/month; health insurance (O-A)","1 an renouvelable (LTR : 10 ans)":"1 year, renewable (LTR: 10 years)","Résidence permanente très difficile":"Permanent residence very difficult","60 jours (selon règles en vigueur)":"60 days (under current rules)","MM2H (révisé 2024)":"MM2H (revised 2024)","Dépôt fixe ≥ 150 000 $US (Silver) + achat immobilier":"Fixed deposit ≥ US$150,000 (Silver) + property purchase","5 ans renouvelable":"5 years, renewable","Non prévue par le programme":"Not offered by the program","Résidence « Pensionado »":"“Pensionado” residence","Pension ≥ 1 000 $US/mois à vie ; adhésion obligatoire à la CAJA (santé publique)":"Lifetime pension ≥ US$1,000/month; mandatory CAJA enrolment (public health)","2 ans, renouvelable":"2 years, renewable","Résidence permanente après 3 ans":"Permanent residence after 3 years","Jusqu’à 180 jours":"Up to 180 days","Pas de visa retraité — carte de tourisme":"No retiree visa — tourist card","Aucune ; résidence temporaire surtout par mariage ou investissement":"None; temporary residence mainly through marriage or investment","90 j, prolongeable à 180 j":"90 days, extendable to 180","Carte de tourisme (90 j)":"Tourist card (90 days)","Tourisme interdit par la loi américaine":"Tourism banned under US law","Voyage limité à 12 catégories autorisées ; cartes bancaires américaines refusées":"Travel limited to 12 authorized categories; US bank cards not accepted","Séjours courts":"Short stays","Non, hors catégories autorisées":"No, outside authorized categories","Résident temporaire ou permanent (solvabilité)":"Temporary or permanent resident (financial solvency)","≈ 4 300 $US/mois de revenus ou ≈ 70 000 $US d’épargne (seuils variables)":"≈ US$4,300/month income or ≈ US$70,000 in savings (thresholds vary)","1 an, puis 3 ans":"1 year, then 3 years","Permanent après 4 ans, ou dès le départ pour retraité à pension élevée":"Permanent after 4 years, or immediately for retirees with a high pension",
+"Citoyen":"Citizen","Citoyen UE (libre circulation)":"EU citizen (free movement)","Aucune":"None","Illimitée":"Unlimited","Sans objet":"Not applicable","Illimité":"Unlimited",
+"Espagne":"Spain","Italie":"Italy","Corée du Sud":"South Korea","Japon":"Japan","Taïwan":"Taiwan","Thaïlande":"Thailand","Malaisie":"Malaysia","Mexique":"Mexico",
+"Montréal":"Montreal","Québec":"Quebec City","Lisbonne":"Lisbon","Barcelone":"Barcelona","Valence":"Valencia","Séville":"Seville","Bologne":"Bologna","Séoul":"Seoul","Hô Chi Minh-Ville":"Ho Chi Minh City","Hanoï":"Hanoi","Hội An":"Hoi An","La Havane":"Havana","Mexico":"Mexico City",
+"Réputation historique forte (médecins par habitant parmi les plus nombreux au monde, bons indicateurs de santé publique). En 2026 : seulement ≈ 30 % des médicaments essentiels disponibles, chirurgies reportées faute d’électricité, exode des médecins (OMS, ONU). Les cliniques payantes pour étrangers sont mieux approvisionnées, mais évacuation vers le Canada à prévoir pour les cas graves.":"Strong historical reputation (one of the highest numbers of doctors per capita in the world, good public health indicators). In 2026: only ≈ 30% of essential medicines available, surgeries postponed due to power cuts, doctors emigrating (WHO, UN). Paid clinics for foreigners are better supplied, but plan for medical evacuation to Canada in serious cases."
+};
+
+const UI={
+ fr:{locale:"fr-CA",title:"Comparateur de villes",
+  sub:(k,c)=>`Coût réel de la vie, sécurité, air, santé, anglais, infrastructures, climat et visa — ${k} pays, ${c} villes.`,
+  hh:"Ménage",hhs:{solo:"Seul",couple:"Couple"},hhl:{solo:"seul",couple:"couple"},cur:"Devise",
+  ppg:"Vos passeports (plusieurs choix possibles)",ppn:{ca:"Canadien",eu:"Français / UE",us:"Américain"},
+  near:"Vol ≤ 5 h de Montréal",sortBy:"Trier par",sortL:l=>`Trier : ${l.toLowerCase()}`,global:"Indice global",
+  tabs:{pays:"Pays",villes:"Villes",cmp:"Comparer"},weights:"Pondération de l’indice global",
+  idx:{cout:"Coût de la vie",secu:"Sécurité",sante:"Système de santé",air:"Qualité de l’air",infra:"Infrastructures",anglais:"Niveau d’anglais",clim:"Climat",visa:"Visa et résidence"},
+  short:{cout:"Coût",secu:"Sécu.",sante:"Santé",air:"Air",infra:"Infra",anglais:"Anglais",clim:"Climat",visa:"Visa"},
+  cost:{loyer:"Loyer (centre-ville)",el:"Électricité",net:"Internet",mob:"Mobile",car:"Transport (taxi, VTC, essence)",pt:"Transport public",food:"Nourriture",hi:"Assurance habitation",ins:"Assurance santé",hc:"Frais de santé"},
+  city:"Ville",index:"Indice",perMonth:"Coût / mois",add:"Comparer",added:"Ajoutée",remove:"Retirer",
+  fab:n=>`Comparer ${n} villes`,range:(a,b)=>`${a} à ${b} par mois`,visa:"Visa : ",stamp:v=>`Indice global ${v} sur 100`,
+  empty:"Ajoutez jusqu’à 4 villes avec le bouton « Comparer » dans les onglets Pays ou Villes.",
+  risk:["faible","modéré","élevé","très élevé"],
+  r:{country:"Indice du pays",flight:"Vol depuis Montréal",costGrp:h=>`Coût mensuel (${h==="couple"?"couple, 2-3 ch.":"seul, 1 ch."})`,total:"Total",env:"Environnement et sécurité",pm:"PM2.5 (µg/m³)",poll:"Indice de pollution",crime:"Indice de criminalité",safe:"Indice de sécurité",life:"Qualité de vie",hnote:"Note santé",costScore:"Score coût de la vie",clim:"Climat (normales annuelles)",water:"Mer, lac ou montagne",cold:"Mois le plus froid (moy.)",hot:"Mois le plus chaud (moy.)",rain:"Précipitations",mmy:"mm/an",rdays:"Jours de pluie / an",sdays:"Jours de neige / an",wx:"Intempéries",risk:"risque",climScore:"Score climat",bestPp:"Meilleur passeport",vn:"Option retraité",vf:"Conditions financières",vd:"Durée / renouvellement",vpr:"Résidence permanente",vfree:"Séjour sans visa",visaScore:"Score visa et résidence"},
+  notes:["Données de référence estimées (fin 2025) à partir de sources publiques comparables : Numbeo pour les loyers, prix et sécurité, IQAir/OMS pour les PM2.5, EF EPI pour l’anglais, classements de systèmes de santé, et normales climatiques 1991–2020 des services météo nationaux. Elles ne sont pas en temps réel et varient fortement selon le quartier.",
+   "Assurance santé : coût mensuel estimé pour un résident étranger dans la cinquantaine (régime public obligatoire quand il existe, sinon assurance internationale) ; pour le Canada, couverture provinciale plus complémentaire. Climat : le score favorise un climat tempéré à doux (hiver au-dessus de 12 °C, été sous 25 °C de moyenne), peu de jours de pluie et de neige, et peu d’intempéries majeures.",
+   "Visas : pour chaque pays, l’app retient le plus avantageux des passeports sélectionnés. Le score reflète la facilité d’obtenir un séjour long et une voie vers la résidence permanente. Conditions connues en 2025 ; les seuils changent souvent, à confirmer auprès du consulat avant toute décision. Temps de vol : trajet habituel le plus rapide depuis Montréal-Trudeau ; les vols saisonniers varient selon l’année. Taux fixes : 1 USD = 1,38 CAD = 0,86 EUR."]},
+ en:{locale:"en-CA",title:"City Comparator",
+  sub:(k,c)=>`Real cost of living, safety, air, healthcare, English, infrastructure, climate and visas — ${k} countries, ${c} cities.`,
+  hh:"Household",hhs:{solo:"Single",couple:"Couple"},hhl:{solo:"single",couple:"couple"},cur:"Currency",
+  ppg:"Your passports (select one or more)",ppn:{ca:"Canadian",eu:"French / EU",us:"American"},
+  near:"Flight ≤ 5 h from Montreal",sortBy:"Sort by",sortL:l=>`Sort by: ${l}`,global:"Overall index",
+  tabs:{pays:"Countries",villes:"Cities",cmp:"Compare"},weights:"Overall index weighting",
+  idx:{cout:"Cost of living",secu:"Safety",sante:"Healthcare system",air:"Air quality",infra:"Infrastructure",anglais:"English level",clim:"Climate",visa:"Visa and residence"},
+  short:{cout:"Cost",secu:"Safety",sante:"Health",air:"Air",infra:"Infra",anglais:"English",clim:"Climate",visa:"Visa"},
+  cost:{loyer:"Rent (city centre)",el:"Electricity",net:"Internet",mob:"Mobile",car:"Transport (taxi, ride-hailing, fuel)",pt:"Public transit",food:"Food",hi:"Home insurance",ins:"Health insurance",hc:"Healthcare costs"},
+  city:"City",index:"Index",perMonth:"Cost / month",add:"Compare",added:"Added",remove:"Remove",
+  fab:n=>`Compare ${n} cities`,range:(a,b)=>`${a} to ${b} per month`,visa:"Visa: ",stamp:v=>`Overall index ${v} out of 100`,
+  empty:"Add up to 4 cities with the “Compare” button in the Countries or Cities tabs.",
+  risk:["low","moderate","high","very high"],
+  r:{country:"Country index",flight:"Flight from Montreal",costGrp:h=>`Monthly cost (${h==="couple"?"couple, 2–3 bedrooms":"single, 1 bedroom"})`,total:"Total",env:"Environment and safety",pm:"PM2.5 (µg/m³)",poll:"Pollution index",crime:"Crime index",safe:"Safety index",life:"Quality of life",hnote:"Healthcare note",costScore:"Cost of living score",clim:"Climate (annual normals)",water:"Sea, lake or mountains",cold:"Coldest month (avg.)",hot:"Warmest month (avg.)",rain:"Precipitation",mmy:"mm/yr",rdays:"Rainy days / yr",sdays:"Snow days / yr",wx:"Severe weather",risk:"risk",climScore:"Climate score",bestPp:"Best passport",vn:"Retiree option",vf:"Financial requirements",vd:"Duration / renewal",vpr:"Permanent residence",vfree:"Visa-free stay",visaScore:"Visa and residence score"},
+  notes:["Estimated reference data (late 2025) based on comparable public sources: Numbeo for rent, prices and safety, IQAir/WHO for PM2.5, EF EPI for English, healthcare system rankings, and 1991–2020 climate normals from national weather services. Figures are not real-time and vary widely by neighbourhood.",
+   "Health insurance: estimated monthly cost for a foreign resident in their fifties (mandatory public plan where one exists, otherwise international insurance); for Canada, provincial coverage plus supplementary insurance. Climate: the score favours a temperate to mild climate (winter above 12 °C, summer below 25 °C on average), few rainy and snowy days, and little severe weather.",
+   "Visas: for each country, the app uses the most favourable of the selected passports. The score reflects how easy it is to get a long stay and a path to permanent residence. Rules as known in 2025; thresholds change often, so confirm with the consulate before deciding. Flight times: usual fastest trip from Montréal-Trudeau; seasonal flights vary from year to year. Fixed rates: 1 USD = 1.38 CAD = 0.86 EUR."]}
+};
+
+const RATES={CAD:1.38,USD:1,EUR:0.86};
+const KEYS=["cout","secu","sante","air","infra","anglais","clim","visa"];
+const COSTK=["loyer","el","net","mob","car","pt","food","hi","ins","hc"];
+
+let S={lang:"fr",hh:"couple",cur:"CAD",view:"pays",sort:"global",w:{cout:3,secu:2,sante:2,air:1,infra:1,anglais:2,clim:2,visa:2},pps:["ca"],cmp:[]};
+try{const s=JSON.parse(localStorage.getItem("cmpVilles")||"null");if(s)S={...S,...s,w:{...S.w,...(s.w||{})}}}catch(e){}
+if(!Array.isArray(S.pps))S.pps=S.pp==="eu"?["ca","eu"]:["ca"];
+S.pps=S.pps.filter(p=>["ca","eu","us"].includes(p));if(!S.pps.length)S.pps=["ca"];delete S.pp;
+if(!UI[S.lang])S.lang=(navigator.language||"fr").startsWith("en")?"en":"fr";
+const save=()=>{try{localStorage.setItem("cmpVilles",JSON.stringify(S))}catch(e){}};
+
+let t=UI[S.lang];
+const tr=s=>S.lang==="en"&&s in EN?EN[s]:s;
+
+const clamp=v=>Math.max(0,Math.min(100,v));
+const CITIES=DATA.flatMap(k=>k.c.map((x,i)=>({id:k.id+i,k,name:x[0],r1:x[1],r2:x[2],pt:x[3],car:x[4],food:x[5],pm:x[6],safe:x[7],infra:x[8],en:x[9]??k.en,cl:CLIM[x[0]],wt:WATER[x[0]],fl:FLY[x[0]]||FLYC[k.id]})));
+
+function compute(){
+  DATA.forEach(k=>k.vb=bestVisa(k));
+  const cp=S.hh==="couple",n=cp?2:1;
+  CITIES.forEach(c=>{
+    const k=c.k,b={loyer:cp?c.r2:c.r1,el:k.el*(cp?1.3:1),net:k.net,mob:k.mob*n,car:c.car*(cp?1.3:1),pt:c.pt*n,food:c.food*(cp?1.8:1),hi:k.hi,ins:k.ins*n,hc:k.hc*n};
+    c.b=b;c.total=Object.values(b).reduce((a,v)=>a+v,0);
+  });
+  const lo=Math.log(Math.min(...CITIES.map(c=>c.total))),hi=Math.log(Math.max(...CITIES.map(c=>c.total)));
+  const wsum=Object.values(S.w).reduce((a,v)=>a+v,0)||1;
+  CITIES.forEach(c=>{
+    c.i={cout:100*(hi-Math.log(c.total))/(hi-lo),secu:c.safe,sante:c.k.hs,air:clamp(100-(c.pm-5)*2.6),infra:c.infra,anglais:c.en,clim:climScore(c.cl),visa:c.k.vb.s};
+    c.i.global=KEYS.reduce((a,key)=>a+S.w[key]*c.i[key],0)/wsum;
+  });
+  DATA.forEach(k=>{
+    const cs=CITIES.filter(c=>c.k===k);k.cs=cs;k.i={};
+    ["global",...KEYS].forEach(key=>k.i[key]=cs.reduce((a,c)=>a+c.i[key],0)/cs.length);
+    k.min=Math.min(...cs.map(c=>c.total));k.max=Math.max(...cs.map(c=>c.total));
+  });
+}
+const vtx=(k,f)=>tr(k.vb[f]);
+const ppTag=k=>{const P=PASSPORTS.find(x=>x.id===k.vb.p);return `${P.f} ${t.ppn[P.id]}`};
+const ok=()=>true;
+const money=v=>new Intl.NumberFormat(t.locale,{style:"currency",currency:S.cur,maximumFractionDigits:0}).format(v*RATES[S.cur]);
+const num=v=>v.toLocaleString(t.locale);
+const tone=v=>v>=70?"hi":v>=55?"mid":"lo";
+const pill=v=>`<span class="pill p-${tone(v)}">${Math.round(v)}</span>`;
+const esc=s=>s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const cname=c=>esc(tr(c.name));
+const addBtn=c=>{const on=S.cmp.includes(c.id);return `<button class="add" data-add="${c.id}" aria-pressed="${on}">${on?t.added:t.add}</button>`};
+
+function cityRows(list,showCountry){
+  return `<div class="scroll"><table><thead><tr><th>${t.city}</th><th>${t.index}</th><th>${t.perMonth}</th>${KEYS.map(k=>`<th>${t.short[k]}</th>`).join("")}<th></th></tr></thead><tbody>${
+    list.map(c=>`<tr><td>${showCountry?c.k.f+" ":""}${cname(c)}${c.wt?` <span title="${esc(tr(c.wt[1]))}">${c.wt[0]}</span>`:""}</td><td>${pill(c.i.global)}</td><td class="num">${money(c.total)}</td>${KEYS.map(k=>`<td>${Math.round(c.i[k])}</td>`).join("")}<td>${addBtn(c)}</td></tr>`).join("")
+  }</tbody></table></div>`;
+}
+
+function renderChrome(){
+  t=UI[S.lang];
+  document.documentElement.lang=S.lang;
+  document.title=t.title;
+  document.getElementById("t-title").textContent=t.title;
+  document.getElementById("g-hh").setAttribute("aria-label",t.hh);
+  document.getElementById("g-cur").setAttribute("aria-label",t.cur);
+  document.getElementById("g-pp").setAttribute("aria-label",t.ppg);
+  document.querySelectorAll("[data-hh]").forEach(b=>b.textContent=t.hhs[b.dataset.hh]);
+  document.querySelectorAll("[data-pp]").forEach(b=>{const P=PASSPORTS.find(x=>x.id===b.dataset.pp);b.textContent=`${P.f} ${t.ppn[P.id]}`});
+  const sel=document.getElementById("sort");sel.setAttribute("aria-label",t.sortBy);
+  sel.innerHTML=[["global",t.global],...KEYS.map(k=>[k,t.idx[k]])].map(([v,l])=>`<option value="${v}">${t.sortL(l)}</option>`).join("");
+  document.querySelectorAll("[data-view]").forEach(b=>{if(b.dataset.view!=="cmp")b.textContent=t.tabs[b.dataset.view]});
+  document.getElementById("t-weights").textContent=t.weights;
+  const L=S.lang==="en";
+  document.getElementById("t-cfg").textContent=L?"Settings":"Configuration";
+  document.getElementById("cfgDone").textContent=L?"Done":"Terminé";
+  document.getElementById("cfgOpen").setAttribute("aria-label",L?"Settings":"Configuration");
+  document.getElementById("l-lang").textContent=L?"Language":"Langue";
+  document.getElementById("l-hh").textContent=t.hh;
+  document.getElementById("l-cur").textContent=t.cur;
+  document.getElementById("l-pp").textContent=t.ppg;
+  document.getElementById("l-sort").textContent=t.sortBy;
+  document.getElementById("wgrid").setAttribute("aria-label",t.weights);
+  document.getElementById("t-notes").textContent=S.lang==="en"?"Sources and method":"Sources et méthode";
+  document.getElementById("notes").innerHTML=t.notes.map(n=>`<p class="note">${n}</p>`).join("");
+  renderWeights();
+}
+
+function render(){
+  compute();
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
+  document.querySelectorAll("[data-hh]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.hh===S.hh));
+  document.querySelectorAll("[data-cur]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.cur===S.cur));
+  document.querySelectorAll("[data-pp]").forEach(b=>b.setAttribute("aria-pressed",S.pps.includes(b.dataset.pp)));
+  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===S.view));
+  document.getElementById("sort").value=S.sort;
+  document.getElementById("t-sum").textContent=`${t.hhs[S.hh]} · ${S.cur} · ${S.pps.map(p=>PASSPORTS.find(x=>x.id===p).f).join("")}`;
+  document.querySelector('[data-view="cmp"]').textContent=`${t.tabs.cmp} (${S.cmp.length})`;
+  const fab=document.getElementById("fab");
+  fab.hidden=!(S.cmp.length>=2&&S.view!=="cmp");fab.textContent=t.fab(S.cmp.length);
+  const out=document.getElementById("out"),key=S.sort;
+  const openIds=[...document.querySelectorAll("details.country[open]")].map(d=>d.dataset.id);
+
+  if(S.view==="pays"){
+    const ks=[...DATA].filter(k=>k.cs.some(ok)).sort((a,b)=>b.i[key]-a.i[key]);
+    out.innerHTML=`<div class="list">${ks.map((k,r)=>`
+      <details class="country" data-id="${k.id}" ${openIds.includes(k.id)?"open":""}>
+        <summary>
+          <div class="stamp s-${tone(k.i.global)}" aria-label="${t.stamp(Math.round(k.i.global))}">${Math.round(k.i.global)}</div>
+          <div>
+            <p class="cname">${k.f} ${tr(k.n)}</p>
+            <div class="cmeta">${t.range(money(k.min),money(k.max))} · ${t.hhl[S.hh]}</div>
+            <div class="cmeta">${t.visa}${vtx(k,"n")}${S.pps.length>1?` · ${ppTag(k)}`:""}</div>
+            <div class="bars">${KEYS.map(x=>`<div class="bar">${t.short[x]} ${Math.round(k.i[x])}<i><b style="width:${k.i[x]}%"></b></i></div>`).join("")}</div>
+          </div>
+          <span class="rank">#${r+1}</span>
+        </summary>
+        <div class="inner">${cityRows([...k.cs].filter(ok).sort((a,b)=>b.i[key]-a.i[key]),false)}</div>
+      </details>`).join("")}</div>`;
+  }else if(S.view==="villes"){
+    const list=[...CITIES].filter(ok).sort((a,b)=>b.i[key]-a.i[key]);
+    out.innerHTML=`<div class="cmp-wrap" style="padding:6px 0">${cityRows(list,true)}</div>`;
+  }else{
+    const cs=S.cmp.map(id=>CITIES.find(c=>c.id===id)).filter(Boolean);
+    if(!cs.length){out.innerHTML=`<div class="cmp-wrap empty">${t.empty}</div>`;return}
+    const R=t.r;
+    const row=(label,vals,fmt,better)=>{
+      const best=cs.length>1&&better?(better==="low"?Math.min(...vals):Math.max(...vals)):null;
+      return `<tr><td>${label}</td>${vals.map(v=>`<td class="${v===best?"best":""}">${fmt(v)}</td>`).join("")}</tr>`};
+    const txt=(label,fn,w=140,left)=>`<tr><td>${label}</td>${cs.map(c=>`<td style="white-space:normal;min-width:${w}px${left?";text-align:left":""}">${fn(c)}</td>`).join("")}</tr>`;
+    const grp=x=>`<tr><th class="group" colspan="${cs.length+1}">${x}</th></tr>`;
+    const r=x=>Math.round(x);
+    out.innerHTML=`<div class="cmp-wrap"><div class="scroll"><table>
+      <thead><tr><th></th>${cs.map(c=>`<th><div class="cmp-head">${c.k.f} ${cname(c)}</div><button class="x" data-rm="${c.id}">${t.remove}</button></th>`).join("")}</tr></thead>
+      <tbody>
+      ${row(t.global,cs.map(c=>c.i.global),v=>pill(v),"high")}
+      ${row(R.country,cs.map(c=>c.k.i.global),r,"high")}
+      ${txt(R.flight,c=>tr(c.fl[1]))}
+      ${grp(R.costGrp(S.hh))}
+      ${COSTK.map(k=>row(t.cost[k],cs.map(c=>c.b[k]),money,"low")).join("")}
+      ${row(`<strong>${R.total}</strong>`,cs.map(c=>c.total),v=>`<strong>${money(v)}</strong>`,"low")}
+      ${grp(R.env)}
+      ${row(R.pm,cs.map(c=>c.pm),num,"low")}
+      ${row(R.poll,cs.map(c=>100-c.i.air),r,"low")}
+      ${row(R.crime,cs.map(c=>100-c.safe),r,"low")}
+      ${row(R.safe,cs.map(c=>c.safe),r,"high")}
+      ${grp(R.life)}
+      ${row(t.idx.sante,cs.map(c=>c.i.sante),r,"high")}
+      ${cs.some(c=>c.k.hn)?txt(R.hnote,c=>c.k.hn?tr(c.k.hn):"—",180,true):""}
+      ${row(t.idx.infra,cs.map(c=>c.infra),r,"high")}
+      ${row(t.idx.anglais,cs.map(c=>c.en),r,"high")}
+      ${row(R.costScore,cs.map(c=>c.i.cout),r,"high")}
+      ${grp(R.clim)}
+      ${txt(R.water,c=>c.wt?c.wt[0]+" "+tr(c.wt[1]):"—")}
+      ${row(R.cold,cs.map(c=>c.cl[0]),v=>`${num(v)} °C`)}
+      ${row(R.hot,cs.map(c=>c.cl[1]),v=>`${num(v)} °C`)}
+      ${row(R.rain,cs.map(c=>c.cl[2]),v=>`${num(v)} ${R.mmy}`,"low")}
+      ${row(R.rdays,cs.map(c=>c.cl[3]),num,"low")}
+      ${row(R.sdays,cs.map(c=>c.cl[4]),num,"low")}
+      ${txt(R.wx,c=>`${tr(c.cl[6])}<br><span class="cmeta">${R.risk} ${t.risk[c.cl[5]]}</span>`)}
+      ${row(R.climScore,cs.map(c=>c.i.clim),r,"high")}
+      ${grp(t.idx.visa)}
+      ${txt(R.bestPp,c=>ppTag(c.k),140,true)}
+      ${[["n",R.vn],["f",R.vf],["d",R.vd],["pr",R.vpr],["free",R.vfree]].map(([f,l])=>txt(l,c=>vtx(c.k,f),160,true)).join("")}
+      ${row(R.visaScore,cs.map(c=>c.i.visa),r,"high")}
+      </tbody></table></div></div>`;
+  }
+}
+
+function closeCfg(){const d=document.getElementById("cfg");if(d.close)d.close();else d.removeAttribute("open")}
+document.getElementById("cfg").addEventListener("click",e=>{if(e.target.id!=="cfg")return;const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeCfg()});
+function renderWeights(){
+  document.getElementById("wgrid").innerHTML=KEYS.map(k=>`<div class="w"><span>${t.short[k]}</span><span class="dots">${[1,2,3,4,5].map(n=>`<button data-wk="${k}" data-wv="${n}" aria-label="${t.idx[k]} : ${n}/5" aria-pressed="${S.w[k]>=n}"></button>`).join("")}</span></div>`).join("");
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.id==="cfgOpen"){const d=document.getElementById("cfg");if(d.showModal)d.showModal();else d.setAttribute("open","");return}
+  if(b.id==="cfgDone"){closeCfg();return}
+  if(b.dataset.lang){if(S.lang===b.dataset.lang)return;S.lang=b.dataset.lang;save();renderChrome();render();return}
+  if(b.dataset.wk){const k=b.dataset.wk,n=+b.dataset.wv;S.w[k]=S.w[k]===n?n-1:n;renderWeights();save();render();return}
+  if(b.dataset.hh){S.hh=b.dataset.hh}
+  else if(b.dataset.cur){S.cur=b.dataset.cur}
+  else if(b.dataset.pp){const p=b.dataset.pp,i=S.pps.indexOf(p);if(i<0)S.pps.push(p);else if(S.pps.length>1)S.pps.splice(i,1);else return}
+  else if(b.dataset.near){S.near=!S.near}
+  else if(b.dataset.view){S.view=b.dataset.view;window.scrollTo(0,0)}
+  else if(b.dataset.add){e.preventDefault();const id=b.dataset.add,i=S.cmp.indexOf(id);
+    if(i>=0)S.cmp.splice(i,1);else{if(S.cmp.length>=4)S.cmp.shift();S.cmp.push(id)}}
+  else if(b.dataset.rm){S.cmp=S.cmp.filter(x=>x!==b.dataset.rm)}
+  else if(b.id==="fab"){S.view="cmp";window.scrollTo(0,0)}
+  else return;
+  save();render();
+});
+document.getElementById("sort").addEventListener("change",e=>{S.sort=e.target.value;save();render()});
+document.getElementById("wgrid").addEventListener("input",e=>{const k=e.target.dataset.w;if(!k)return;S.w[k]=+e.target.value;document.getElementById("wv-"+k).textContent=S.w[k];save();render()});
+renderChrome();render();
+
+// Site : lien À propos traduit, installation (PWA), service worker
+(function(){
+  const a=document.getElementById("aboutLink"),ib=document.getElementById("installBtn");
+  const lab=()=>{const en=S.lang==="en";a.textContent=en?"About · privacy":"À propos · confidentialité";a.href=en?"a-propos.html#en":"a-propos.html";ib.textContent=en?"Install the app":"Installer l’app"};
+  lab();document.addEventListener("click",e=>{if(e.target.closest("[data-lang]"))setTimeout(lab)});
+  let deferred=null;
+  window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;ib.hidden=false});
+  ib.addEventListener("click",async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;ib.hidden=true});
+  if("serviceWorker" in navigator&&location.protocol==="https:")window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+})();
+</script>
+</body>
+</html>
