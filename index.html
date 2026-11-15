@@ -23,20 +23,23 @@
 :root{
   --bg:#EEF2F3; --surface:#FFFFFF; --ink:#16233B; --muted:#5B6878; --line:#D5DDE2;
   --sea:#0E7C86; --sun:#C98A12; --rust:#B4452F; --sea-soft:#DCEFF0; --sun-soft:#F7ECD3; --rust-soft:#F6E2DC;
+  --btn:#16233B; --on-btn:#FFFFFF;
   color-scheme:light;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0F1724; --surface:#172234; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2A3A50;
-    --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020; --rust-soft:#3D2620;
+    --bg:#0D1520; --surface:#16212F; --ink:#E8EEF4; --muted:#A3B0BF; --line:#283749;
+    --sea:#4CC3CC; --sun:#EDB95A; --rust:#EE8A72; --sea-soft:#123B44; --sun-soft:#3F3218; --rust-soft:#45261F;
+    --btn:#4CC3CC; --on-btn:#06222A;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0F1724; --surface:#172234; --ink:#E6ECF2; --muted:#9AA8B8; --line:#2A3A50;
-  --sea:#3CB8C2; --sun:#E5B04A; --rust:#E07A62; --sea-soft:#163A44; --sun-soft:#3A3020; --rust-soft:#3D2620;
+  --bg:#0D1520; --surface:#16212F; --ink:#E8EEF4; --muted:#A3B0BF; --line:#283749;
+  --sea:#4CC3CC; --sun:#EDB95A; --rust:#EE8A72; --sea-soft:#123B44; --sun-soft:#3F3218; --rust-soft:#45261F;
+  --btn:#4CC3CC; --on-btn:#06222A;
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -62,7 +65,7 @@ details.notes{margin-top:24px;color:var(--muted);font-size:.85rem}
 details.notes summary{cursor:pointer}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:transparent;color:var(--ink);padding:4px 9px;font:inherit;font-size:.78rem;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.seg button[aria-pressed="true"]{background:var(--btn);color:var(--on-btn);font-weight:600}
 select{font:inherit;font-size:.78rem;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
 .tabs{display:flex;gap:4px;margin-top:10px}
@@ -98,7 +101,7 @@ tbody tr:last-child td{border-bottom:0}
 .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:.8rem;text-decoration:underline}
 .empty{padding:28px 16px;text-align:center;color:var(--muted)}
 .note{color:var(--muted);font-size:.85rem;margin-top:28px;max-width:72ch}
-.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);border:0;border-radius:999px;padding:12px 20px;font:600 .95rem "Source Sans 3",sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:6}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--btn);color:var(--on-btn);border:0;border-radius:999px;padding:12px 20px;font:600 .95rem "Source Sans 3",sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);z-index:6}
 .fab[hidden]{display:none}
 @media (max-width:560px){
 }
@@ -119,7 +122,7 @@ dialog.sheet{border:0;padding:16px 18px calc(20px + env(safe-area-inset-bottom,0
 dialog.sheet::backdrop{background:rgba(10,16,28,.45)}
 .sheet-head{display:flex;justify-content:space-between;align-items:center}
 .sheet-head h2{font-size:1.05rem;margin:0}
-.done{border:0;background:var(--ink);color:var(--surface);border-radius:999px;padding:6px 14px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.done{border:0;background:var(--btn);color:var(--on-btn);border-radius:999px;padding:6px 14px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
 .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
 dialog .seg{display:flex;width:100%}
 dialog .seg button{flex:1;padding:7px 6px;font-size:.85rem}
@@ -298,6 +301,8 @@ body.wiz-on{overflow:hidden}
   <div class="sheet-head"><h2 id="t-cfg"></h2><button id="cfgDone" class="done"></button></div>
   <p class="lbl" id="l-lang"></p>
   <div class="seg" role="group" aria-label="Langue / Language"><button data-lang="fr" lang="fr">Français</button><button data-lang="en" lang="en">English</button></div>
+  <p class="lbl" id="l-theme"></p>
+  <div class="seg" role="group" id="g-theme"><button data-th="auto"></button><button data-th="light"></button><button data-th="dark"></button></div>
   <p class="lbl" id="l-hh"></p>
   <div class="seg" role="group" id="g-hh"><button data-hh="solo"></button><button data-hh="couple"></button></div>
   <p class="lbl" id="l-cur"></p>
@@ -446,7 +451,7 @@ const UI={
   empty:"Touchez + à côté d’une ville pour l’ajouter. Vous pouvez comparer jusqu’à 4 villes côte à côte.",browse:"Parcourir les villes",yours:"Votre ville",vs:n=>`vs ${n}`,pct:p=>`${p>0?"+":"−"}${Math.abs(p)} %`,same:"≈ même coût",
   refLabel:"Référence",scope:k=>`Top 5 pays par continent · 5 villes par pays · tri : ${k}`,
   homeCity:"Votre ville actuelle",homeCost:"Votre budget mensuel actuel (facultatif)",homeHint:"Laissez vide pour utiliser l’estimation de l’app pour votre ville.",
-  conts:"Continents",contHint:"Un ou plusieurs",restart:"Relancer l’assistant",
+  conts:"Continents",contHint:"Un ou plusieurs",restart:"Relancer l’assistant",theme:"Apparence",ths:{auto:"Auto",light:"Clair",dark:"Sombre"},
   wz:{steps:["Bienvenue","Votre situation","Vos passeports","Où aimeriez-vous vivre ?","Ce qui compte pour vous"],
     title:"Trouvez votre prochaine ville",
     intro:"Quelques questions, et l’app classe les pays et les villes selon vos priorités, en les comparant à votre ville actuelle.",
@@ -475,7 +480,7 @@ const UI={
   empty:"Tap + next to a city to add it. You can compare up to 4 cities side by side.",browse:"Browse cities",yours:"Your city",vs:n=>`vs ${n}`,pct:p=>`${p>0?"+":"−"}${Math.abs(p)}%`,same:"≈ same cost",
   refLabel:"Baseline",scope:k=>`Top 5 countries per continent · 5 cities per country · sorted by ${k}`,
   homeCity:"Your current city",homeCost:"Your current monthly budget (optional)",homeHint:"Leave blank to use the app’s estimate for your city.",
-  conts:"Continents",contHint:"One or more",restart:"Restart the setup",
+  conts:"Continents",contHint:"One or more",restart:"Restart the setup",theme:"Appearance",ths:{auto:"Auto",light:"Light",dark:"Dark"},
   wz:{steps:["Welcome","Your situation","Your passports","Where would you like to live?","What matters to you"],
     title:"Find your next city",
     intro:"A few questions, and the app ranks countries and cities by your priorities, compared with where you live now.",
@@ -592,6 +597,8 @@ function renderChrome(){
   document.getElementById("l-hcost").textContent=t.homeCost;
   document.getElementById("l-conts").textContent=t.conts;
   document.getElementById("restartBtn").textContent=t.restart;
+  document.getElementById("l-theme").textContent=t.theme;document.getElementById("g-theme").setAttribute("aria-label",t.theme);
+  document.querySelectorAll("[data-th]").forEach(b=>b.textContent=t.ths[b.dataset.th]);
   document.getElementById("g-conts").innerHTML=CONTS.map(c=>`<button data-cont="${c.id}">${ico("check")}${contName(c)}</button>`).join("");
   document.querySelectorAll(".homeSel").forEach(x=>x.innerHTML=homeOptions());
   document.getElementById("t-notes").textContent=S.lang==="en"?"Sources and method":"Sources et méthode";
@@ -612,6 +619,7 @@ function render(){
   const lead=document.querySelector(".lead");lead.hidden=S.view==="cmp";
   document.getElementById("t-lead").innerHTML=`<span class="ref">${ico("pin")}<span><b>${homeName()}</b> · ${money(HT)} ${t.perMo}${S.homeCost?` (${t.budget})`:""} · ${t.index.toLowerCase()} ${Math.round(HOME.i.global)}</span></span><small>${t.scope((S.sort==="global"?t.global:t.idx[S.sort]).toLowerCase())}</small>`;
   document.querySelectorAll("[data-cont]").forEach(b=>b.setAttribute("aria-pressed",S.conts.includes(b.dataset.cont)));
+  document.querySelectorAll("[data-th]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.th===(S.theme||"auto")));
   document.querySelectorAll(".homeSel").forEach(x=>{if(x.value!==HOME.id)x.value=HOME.id});
   document.querySelectorAll(".homeCost").forEach(x=>{if(document.activeElement!==x)x.value=S.homeCost?Math.round(S.homeCost*RATES[S.cur]):"";x.placeholder=money(HOME.total);const u=x.parentNode.querySelector(".unit");if(u)u.textContent=S.cur});
   document.querySelector("#leadAdj span").textContent=t.adjust;
@@ -664,7 +672,7 @@ function render(){
       ${txt(R.flight,c=>tr(c.fl[1]))}
       ${grp(R.costGrp(S.hh))}
       ${COSTK.map(k=>row(t.cost[k],cs.map(c=>c.b[k]),money,"low")).join("")}
-      ${S.homeCost?`<tr><td><strong>${R.total}</strong></td>${cs.map((c,i)=>`<td><strong>${money(c===HOME?HT:c.total)}</strong>${c===HOME?`<br><span class="cmeta">${t.budget} · ${t.estim} ${money(c.total)}</span>`:""}</td>`).join("")}</tr>`:row(`<strong>${R.total}</strong>`,cs.map(c=>c.total),v=>`<strong>${money(v)}</strong>`,"low")}
+      ${S.homeCost?`<tr><td><strong>${R.total}</strong></td>${cs.map((c,i)=>`<td style="white-space:normal;min-width:96px"><strong>${money(c===HOME?HT:c.total)}</strong>${c===HOME?`<br><span class="cmeta">${t.budget}<br>${t.estim} : ${money(c.total)}</span>`:""}</td>`).join("")}</tr>`:row(`<strong>${R.total}</strong>`,cs.map(c=>c.total),v=>`<strong>${money(v)}</strong>`,"low")}
       ${txt(`<strong>${t.dCost}</strong>`,c=>c===HOME?(S.homeCost?`<span class="cmeta">${t.budget}</span>`:"—"):dTag(c))}
       ${grp(R.env)}
       ${row(R.pm,cs.map(c=>c.pm),num,"low")}
@@ -721,6 +729,9 @@ document.addEventListener("click",e=>{
   save();render();
 });
 
+function applyTheme(){const r=document.documentElement;if(S.theme==="light"||S.theme==="dark")r.dataset.theme=S.theme;else delete r.dataset.theme;
+  const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme:dark)").matches);const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=dark?"#16212F":"#16233B"}
+applyTheme();
 function homeOptions(){
   return CONTS.map(c=>DATA.filter(k=>k.ct===c.id).map(k=>`<optgroup label="${k.f} ${esc(tr(k.n))}">${CITIES.filter(x=>x.k===k).sort((a,b)=>tr(a.name).localeCompare(tr(b.name))).map(x=>`<option value="${x.id}">${esc(tr(x.name))}</option>`).join("")}</optgroup>`).join("")).join("");
 }
@@ -765,7 +776,8 @@ document.addEventListener("input",e=>{
   if(x.classList&&x.classList.contains("homeCost")){const v=parseFloat(x.value);S.homeCost=v>0?v/RATES[S.cur]:null;save();render()}
 });
 document.addEventListener("click",e=>{
-  const b=e.target.closest("[data-wiz],[data-cont]");if(!b)return;
+  const b=e.target.closest("[data-wiz],[data-cont],[data-th]");if(!b)return;
+  if(b.dataset.th){S.theme=b.dataset.th;applyTheme();save();render();return}
   if(b.dataset.cont){const c=b.dataset.cont,i=S.conts.indexOf(c);if(i<0)S.conts.push(c);else if(S.conts.length>1)S.conts.splice(i,1);save();render();return}
   const a=b.dataset.wiz;
   if(a==="next"){WZ=Math.min(WN-1,WZ+1);renderWiz()}

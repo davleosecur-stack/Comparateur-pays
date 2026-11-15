@@ -1,6 +1,6 @@
 // Hors ligne : on sert le cache, puis on le met à jour en arrière-plan.
 // Changer VERSION à chaque mise en ligne pour forcer la mise à jour.
-const VERSION = "villes-v1.3.1";
+const VERSION = "villes-v1.4.0";
 const CORE = ["./", "index.html", "a-propos.html", "manifest.webmanifest", "favicon.png",
   "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting())));
