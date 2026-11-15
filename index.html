@@ -216,6 +216,7 @@ th.homecol,.cmp-wrap tbody td:nth-child(2):not(.best){background:color-mix(in sr
 .homecol .cmp-head .ico{color:var(--sea)}
 /* ---- continents ---- */
 .cont{margin-top:22px}
+.ctag{margin:2px 0 0;font-size:.72rem;font-weight:600;letter-spacing:.02em;color:var(--sea)}
 .conth{display:flex;justify-content:space-between;align-items:baseline;font:600 1.15rem Sora,sans-serif;margin:0 2px 10px}
 .conth span{font:500 .78rem "Source Sans 3",sans-serif;color:var(--muted)}
 .cont .list{margin-top:0}
@@ -627,6 +628,7 @@ function render(){
             <div class="stamp s-${tone(k.i.global)}" aria-label="${t.stamp(Math.round(k.i.global))}">${Math.round(k.i.global)}</div>
             <div class="cid">
               <p class="cname">${k.f} ${tr(k.n)}</p>
+              <p class="ctag">${contName(CONTS.find(c=>c.id===k.ct))}</p>
               <p class="cmeta num">${t.range(money(k.min),money(k.max))}</p>
               <p class="cmeta">${(()=>{const a=Math.round((k.min-HT)/HT*100),b=Math.round((k.max-HT)/HT*100);return a===b?`<span class="dl ${a<0?"dn":"up"}">${t.pct(a)}</span>`:`<span class="dl ${a<0?"dn":"up"}">${t.pct(a)}</span> … <span class="dl ${b<0?"dn":"up"}">${t.pct(b)}</span>`})()} ${t.vs(homeName())}</p>
             </div>
@@ -638,7 +640,7 @@ function render(){
         </summary>
         <div class="inner">${cityRows([...k.cs].sort((a,b)=>b.i[key]-a.i[key]),false)}</div>
       </details>`;
-    out.innerHTML=VIS.map(({c,ks})=>`<section class="cont"><h2 class="conth">${contName(c)}<span>${ks.length} / ${DATA.filter(k=>k.ct===c.id).length}</span></h2><div class="list">${[...ks].sort((a,b)=>b.i[key]-a.i[key]).map(card).join("")}</div></section>`).join("");
+    out.innerHTML=`<div class="list">${VIS.flatMap(v=>v.ks).sort((a,b)=>b.i[key]-a.i[key]).map(card).join("")}</div>`;
   }else if(S.view==="villes"){
     const list=VIS.flatMap(v=>v.ks.flatMap(k=>k.cs)).sort((a,b)=>b.i[key]-a.i[key]);
     out.innerHTML=`<div class="citylist">${cityRows(list,true)}</div>`;
