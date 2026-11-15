@@ -144,10 +144,10 @@ html{scrollbar-color:var(--line) transparent;accent-color:var(--sea)}
 .ch{display:flex;align-items:center;gap:12px}
 .cid{flex:1;min-width:0}
 .rank{align-self:flex-start;font:600 .8rem Sora,sans-serif;color:var(--muted);font-variant-numeric:tabular-nums}
-.cvisa{margin:10px 0 0;font-size:.84rem;color:var(--muted);display:flex;gap:6px;align-items:baseline}
+.cvisa{margin:8px 0 0;font-size:.84rem;color:var(--muted);display:flex;gap:6px;align-items:baseline}
 .cvisa strong{color:var(--ink);font-weight:600}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 14px;margin-top:12px}
-@media (min-width:720px){.metrics{grid-template-columns:repeat(8,1fr)}}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 14px;margin-top:12px}
+@media (min-width:720px){.metrics{grid-template-columns:repeat(9,1fr)}}
 .m{font-size:.74rem;color:var(--muted);min-width:0}
 .m div{display:flex;justify-content:space-between;gap:4px}
 .m b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
@@ -172,7 +172,7 @@ html{scrollbar-color:var(--line) transparent;accent-color:var(--sea)}
 .add{display:inline-grid;place-items:center;box-sizing:border-box;padding:0;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--sea);background:transparent;color:var(--sea);cursor:pointer;font:inherit;font-size:1.05rem;transition:background .15s,color .15s}
 .add:hover{background:var(--sea-soft)}
 .add[aria-pressed="true"]{background:var(--sea);color:var(--surface)}
-.strip{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:9px}
+.strip{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:9px}
 .strip span{display:flex;flex-direction:column;align-items:center;padding:3px 0 4px;border-radius:6px;font:600 .8rem Sora,sans-serif;font-variant-numeric:tabular-nums;line-height:1.2}
 .strip small{font:500 .6rem "Source Sans 3",sans-serif;color:var(--muted);letter-spacing:.01em}
 .c-hi{background:var(--sea-soft);color:var(--sea)} .c-mid{background:var(--sun-soft);color:var(--sun)} .c-lo{background:var(--rust-soft);color:var(--rust)}
@@ -219,6 +219,10 @@ th.homecol,.cmp-wrap tbody td:nth-child(2):not(.best){background:color-mix(in sr
 .homecol .cmp-head .ico{color:var(--sea)}
 /* ---- continents ---- */
 .cont{margin-top:22px}
+.orule{font-size:.86rem;color:var(--muted);padding:12px 14px;border-top:1px solid var(--line)}
+.orule strong{color:var(--ink)}
+.orule ul{margin:6px 0 0;padding-left:18px}
+.orule li{margin:3px 0}
 .ctag{margin:2px 0 0;font-size:.72rem;font-weight:600;letter-spacing:.02em;color:var(--sea)}
 .conth{display:flex;justify-content:space-between;align-items:baseline;font:600 1.15rem Sora,sans-serif;margin:0 2px 10px}
 .conth span{font:500 .78rem "Source Sans 3",sans-serif;color:var(--muted)}
@@ -311,6 +315,8 @@ body.wiz-on{overflow:hidden}
   <div class="field"><select class="homeSel" aria-labelledby="l-home"></select></div>
   <p class="lbl" id="l-hcost"></p>
   <div class="field money-in"><input class="homeCost" type="number" inputmode="numeric" min="0" step="50" aria-labelledby="l-hcost"><span class="unit"></span></div>
+  <p class="lbl" id="l-orig"></p>
+  <div class="chips" role="group" id="g-orig"></div>
   <p class="lbl" id="l-pp"></p>
   <div class="chips" role="group" id="g-pp"><button data-pp="ca"></button><button data-pp="eu"></button><button data-pp="us"></button></div>
   <p class="lbl" id="l-conts"></p>
@@ -423,6 +429,22 @@ Object.assign(FLY,{"Ville de Panama":[5.5,"≈ 5 h 30 direct (Copa)"],"Boquete":
 Object.assign(VISA,{"gr":{"s":70,"n":"Visa « Personne financièrement indépendante » (FIP)","f":"≈ 3 500 €/mois + 20 % pour le conjoint","d":"2 ans, puis 3 ans","pr":"Résident UE longue durée après 5 ans","free":"90 j / 180 (Schengen)"},"pa":{"s":92,"n":"Visa « Pensionado »","f":"Pension ≥ 1 000 $US/mois à vie (+ 250 $US par personne à charge)","d":"Résidence permanente dès l’approbation","pr":"Immédiate","free":"180 jours"},"co":{"s":80,"n":"Visa M « pensionné »","f":"Pension ≥ 3 × salaire minimum colombien (≈ 1 200–1 300 $US/mois)","d":"Jusqu’à 3 ans, renouvelable","pr":"Visa R (résident) après 5 ans","free":"90 j, prolongeable à 180 j/an"},"br":{"s":70,"n":"Visa de résidence « retraité » (VITEM XIV)","f":"Pension ≥ 2 000 $US/mois","d":"2 ans, puis durée indéterminée","pr":"Résidence indéterminée après 2 ans","free":"90 jours (e-visa requis depuis 2025)","us":{"free":"90 jours (e-visa requis depuis 2025)"}},"ar":{"s":76,"n":"Résidence « pensionado »","f":"Pension ≈ 5 × salaire minimum argentin (seuil variable selon l’inflation)","d":"1 an renouvelable","pr":"Résidence permanente après 3 ans","free":"90 jours"},"cl":{"s":74,"n":"Résidence temporaire « retraité »","f":"Pension stable suffisante (≈ 1 500 $US/mois conseillé)","d":"2 ans","pr":"Résidence définitive après 2 ans","free":"90 jours"},"uy":{"s":84,"n":"Résidence légale (revenus)","f":"Revenus prouvés (≈ 1 500 $US/mois conseillé)","d":"Permanente dès l’approbation","pr":"Immédiate","free":"90 jours, prolongeable"},"ma":{"s":70,"n":"Carte de séjour « retraité »","f":"Revenus stables transférés au Maroc (≈ 1 500 €/mois conseillé)","d":"1 an, puis 10 ans","pr":"Carte de 10 ans après 4 ans","free":"90 jours"},"tn":{"s":60,"n":"Carte de séjour (revenus)","f":"Revenus transférés en dinars","d":"1 à 2 ans renouvelable","pr":"Carte de résident après 5 ans","free":"4 mois"},"za":{"s":66,"n":"Visa « personne retraitée »","f":"Revenus ≈ 37 000 ZAR/mois (≈ 2 000 $US)","d":"4 ans renouvelable","pr":"Résidence permanente possible","free":"90 jours"},"mu":{"s":85,"n":"Permis de résidence « retraité »","f":"50 ans et plus, transfert ≥ 1 500 $US/mois","d":"10 ans renouvelable","pr":"Par achat immobilier ≥ 375 000 $US","free":"90 jours, jusqu’à 180"},"sn":{"s":55,"n":"Carte de séjour","f":"Revenus suffisants, assurance santé","d":"1 à 2 ans renouvelable","pr":"Possible après plusieurs années","free":"90 jours"},"au":{"s":15,"n":"Pas de visa retraité (programmes fermés)","f":"Visa de parent ou d’investisseur, conditions très élevées","d":"Séjours de visiteur","pr":"Très difficile","free":"3 mois par séjour (ETA)"},"nz":{"s":20,"n":"Visa « visiteur retraité temporaire » (66 ans et plus)","f":"Investissement ≥ 750 000 NZ$ + revenus ≥ 60 000 NZ$/an","d":"2 ans renouvelable","pr":"Résidence via investissement de 1 M NZ$","free":"6 mois (NZeTA)","us":{"free":"90 jours (NZeTA)"}},"fj":{"s":65,"n":"Permis de résidence « retraité » (45 ans et plus)","f":"Revenus de retraite stables, assurance santé","d":"3 ans renouvelable","pr":"Rarement accordée","free":"4 mois"},"pf":{"s":55,"n":"Visa long séjour « visiteur » (règles françaises d’outre-mer)","f":"Revenus suffisants, assurance santé, logement","d":"1 an renouvelable","pr":"Carte de résident après 5 ans","free":"90 jours"},"nc":{"s":55,"n":"Visa long séjour « visiteur » (règles françaises d’outre-mer)","f":"Revenus suffisants, assurance santé, logement","d":"1 an renouvelable","pr":"Carte de résident après 5 ans","free":"90 jours"}});
 const CONTS=[{id:"eu",fr:"Europe",en:"Europe",ks:["fr","pt","es","it","gr"]},{id:"as",fr:"Asie",en:"Asia",ks:["kr","jp","tw","vn","th","my"]},{id:"nam",fr:"Amérique du Nord et centrale",en:"North & Central America",ks:["ca","mx","cr","cu","pa"]},{id:"sam",fr:"Amérique du Sud",en:"South America",ks:["co","br","ar","cl","uy"]},{id:"af",fr:"Afrique",en:"Africa",ks:["ma","tn","za","mu","sn"]},{id:"oc",fr:"Océanie",en:"Oceania",ks:["au","nz","fj","pf","nc"]}];
 DATA.forEach(k=>{const c=CONTS.find(x=>x.ks.includes(k.id));k.ct=c?c.id:"eu"});
+const TAX={"ca":{"s":35,"r":{"fr":"Revenus mondiaux, barème fédéral + provincial ≈ 20 % à 53 %","en":"Worldwide income, federal + provincial rates ≈ 20% to 53%"},"fr":true,"ca":null},"fr":{"s":40,"r":{"fr":"Revenus mondiaux, barème 0 % à 45 % (+ prélèvements sociaux selon la couverture santé)","en":"Worldwide income, 0% to 45% brackets (+ social levies depending on health coverage)"},"fr":null,"ca":true},"pt":{"s":40,"r":{"fr":"Barème progressif 13 % à 48 % : le régime RNH à 10 % est fermé et l’IFICI exclut les pensions","en":"Progressive 13% to 48%: the 10% NHR regime is closed and IFICI excludes pensions"},"fr":true,"ca":true},"es":{"s":35,"r":{"fr":"Barème progressif ≈ 19 % à 47 % selon la région, impôt sur la fortune possible","en":"Progressive ≈ 19% to 47% depending on region, possible wealth tax"},"fr":true,"ca":true},"it":{"s":75,"r":{"fr":"7 % forfaitaire pendant 10 ans pour les retraités qui s’installent dans une petite commune du Sud ; sinon 23 % à 43 %","en":"7% flat for 10 years for retirees moving to a small southern town; otherwise 23% to 43%"},"fr":true,"ca":true},"gr":{"s":90,"r":{"fr":"Régime spécial : 7 % forfaitaire sur tous les revenus étrangers pendant 15 ans (non-résident grec 5 des 6 années précédentes)","en":"Special regime: 7% flat on all foreign income for 15 years (not Greek resident in 5 of the previous 6 years)"},"fr":true,"ca":true},"kr":{"s":55,"r":{"fr":"Étrangers résidents moins de 5 ans sur 10 : revenus étrangers imposés seulement s’ils sont rapatriés ; barème 6 % à 45 %","en":"Foreign residents under 5 of 10 years: foreign income taxed only if brought in; 6% to 45%"},"fr":true,"ca":true},"jp":{"s":45,"r":{"fr":"Résidents non permanents (moins de 5 ans sur 10) : revenus étrangers imposés s’ils sont rapatriés ; ensuite revenus mondiaux, 5 % à 45 % + 10 % local","en":"Non-permanent residents (under 5 of 10 years): foreign income taxed if brought in; then worldwide, 5% to 45% + 10% local"},"fr":true,"ca":true},"tw":{"s":80,"r":{"fr":"Revenus étrangers soumis seulement à l’impôt minimum au-delà d’≈ 1 M NT$ par an","en":"Foreign income only subject to the minimum tax above ≈ NT$1M a year"},"fr":true,"ca":true},"vn":{"s":45,"r":{"fr":"Revenus mondiaux, barème 5 % à 35 %","en":"Worldwide income, 5% to 35%"},"fr":true,"ca":true},"th":{"s":60,"r":{"fr":"Revenus étrangers imposés lorsqu’ils sont transférés en Thaïlande (depuis 2024), 0 % à 35 % ; pensions publiques canadiennes (RPC, PSV) protégées par le traité","en":"Foreign income taxed when brought into Thailand (since 2024), 0% to 35%; Canadian public pensions (CPP, OAS) protected by the treaty"},"fr":true,"ca":true},"my":{"s":92,"r":{"fr":"Revenus de source étrangère exonérés pour les particuliers (jusqu’en 2036)","en":"Foreign-source income exempt for individuals (until 2036)"},"fr":true,"ca":true},"mx":{"s":45,"r":{"fr":"Revenus mondiaux, barème 1,9 % à 35 %","en":"Worldwide income, 1.9% to 35%"},"fr":true,"ca":true},"cr":{"s":92,"r":{"fr":"Système territorial : revenus étrangers non imposés","en":"Territorial system: foreign income not taxed"},"fr":false,"ca":false},"cu":{"s":70,"r":{"fr":"Règles peu claires pour les étrangers ; en pratique, pensions étrangères rarement imposées","en":"Unclear rules for foreigners; in practice foreign pensions rarely taxed"},"fr":false,"ca":false},"pa":{"s":95,"r":{"fr":"Système territorial : revenus étrangers non imposés","en":"Territorial system: foreign income not taxed"},"fr":true,"ca":false},"co":{"s":45,"r":{"fr":"Revenus mondiaux après 183 jours ; pensions étrangères imposées (jusqu’à 39 %), exonérations partielles","en":"Worldwide income after 183 days; foreign pensions taxed (up to 39%), partial exemptions"},"fr":true,"ca":true},"br":{"s":40,"r":{"fr":"Revenus mondiaux ; pensions étrangères imposées chaque mois, jusqu’à 27,5 %","en":"Worldwide income; foreign pensions taxed monthly, up to 27.5%"},"fr":true,"ca":true},"ar":{"s":45,"r":{"fr":"Revenus mondiaux, barème 5 % à 35 % ; forte inflation et contrôle des changes","en":"Worldwide income, 5% to 35%; high inflation and currency controls"},"fr":true,"ca":true},"cl":{"s":65,"r":{"fr":"Revenus étrangers non imposés pendant 3 ans (prolongeable), puis revenus mondiaux 0 % à 40 %","en":"Foreign income not taxed for 3 years (extendable), then worldwide 0% to 40%"},"fr":true,"ca":true},"uy":{"s":80,"r":{"fr":"Pensions étrangères en général non imposées ; capitaux étrangers exonérés 11 ans pour les nouveaux résidents (règles revues en 2026)","en":"Foreign pensions generally not taxed; foreign capital income exempt for 11 years for new residents (rules revised in 2026)"},"fr":false,"ca":false},"ma":{"s":88,"r":{"fr":"Pensions étrangères : abattement de 80 % sur la part transférée en dirhams","en":"Foreign pensions: 80% allowance on the part transferred in dirhams"},"fr":true,"ca":true},"tn":{"s":82,"r":{"fr":"Pensions étrangères : abattement de 80 % sur les montants transférés en Tunisie","en":"Foreign pensions: 80% allowance on amounts transferred to Tunisia"},"fr":true,"ca":true},"za":{"s":75,"r":{"fr":"Pensions étrangères pour un travail effectué hors d’Afrique du Sud exonérées ; placements imposés 18 % à 45 %","en":"Foreign pensions for work done outside South Africa exempt; investment income taxed 18% to 45%"},"fr":true,"ca":true},"mu":{"s":80,"r":{"fr":"Revenus étrangers imposés seulement s’ils sont rapatriés, 0 % à 20 %","en":"Foreign income taxed only if brought in, 0% to 20%"},"fr":true,"ca":false},"sn":{"s":40,"r":{"fr":"Revenus mondiaux, barème jusqu’à 43 %","en":"Worldwide income, up to 43%"},"fr":true,"ca":true},"au":{"s":35,"r":{"fr":"Revenus mondiaux, barème 0 % à 45 % + 2 % Medicare","en":"Worldwide income, 0% to 45% + 2% Medicare levy"},"fr":true,"ca":true},"nz":{"s":45,"r":{"fr":"Revenus mondiaux, barème 10,5 % à 39 % ; exonération temporaire des revenus étrangers sauf pensions","en":"Worldwide income, 10.5% to 39%; temporary foreign-income exemption except pensions"},"fr":true,"ca":true},"fj":{"s":60,"r":{"fr":"Revenus mondiaux des résidents, jusqu’à 20 % ; exonérations possibles pour retraités (à confirmer)","en":"Residents taxed on worldwide income, up to 20%; possible retiree exemptions (to be confirmed)"},"fr":false,"ca":false},"pf":{"s":85,"r":{"fr":"Pas d’impôt sur le revenu des personnes ; contribution de solidarité territoriale sur certains revenus","en":"No personal income tax; territorial solidarity levy on some income"},"fr":true,"ca":false},"nc":{"s":55,"r":{"fr":"Impôt local sur le revenu, barème plus doux qu’en métropole","en":"Local income tax, milder brackets than mainland France"},"fr":true,"ca":false}};
+const ORIGINS=[{id:"ca",f:"🇨🇦",fr:"Canada",en:"Canada",of:{fr:"du Canada",en:"Canada"},lv:{fr:"du Canada",en:"Canada"}},{id:"fr",f:"🇫🇷",fr:"France",en:"France",of:{fr:"de France",en:"France"},lv:{fr:"de la France",en:"France"}}];
+const ORIG_NOTES={
+ ca:{fr:["Impôt de départ : disposition présumée de la plupart des placements (sauf REER/FERR, régimes de retraite, immobilier canadien).","Pensions, FERR, RPC/RRQ et PSV : retenue canadienne de 25 %, réduite par traité (souvent 15 % sur les pensions périodiques, parfois 0 % sur RPC et PSV). Sans traité, le formulaire NR5 peut réduire la retenue.","PSV : impôt de récupération au-delà d’≈ 93 454 $ de revenu net (2025)."],
+     en:["Departure tax: deemed disposition of most investments (except RRSP/RRIF, pension plans, Canadian real estate).","Pensions, RRIF, CPP/QPP and OAS: 25% Canadian withholding, reduced by treaty (often 15% on periodic pensions, sometimes 0% on CPP and OAS). Without a treaty, form NR5 can lower the withholding.","OAS: recovery tax above ≈ $93,454 net income (2025)."]},
+ fr:{fr:["Pensions publiques (fonctionnaires) : imposables en France dans la plupart des conventions.","Pensions de base et complémentaires (CNAV, Agirc-Arrco) et privées : en général imposables dans le pays de résidence s’il existe une convention ; sinon, retenue à la source française.","Prélèvements sociaux (CSG/CRDS) : non dus si vous n’êtes plus affilié à l’Assurance maladie française."],
+     en:["Public-sector pensions: taxable in France under most treaties.","Basic, supplementary (CNAV, Agirc-Arrco) and private pensions: generally taxable in the country of residence if a treaty exists; otherwise French withholding applies.","Social levies (CSG/CRDS): not due if you are no longer covered by French public health insurance."]}};
+// Score fiscal pour une origine : la retenue du pays d’origine plafonne l’avantage d’un pays à faible impôt
+function taxFor(k,o){const x=TAX[k.id];if(!x)return 50;
+  if(k.id===o)return x.s;
+  const treaty=x[o];let s=x.s;
+  if(o==="ca")s=treaty?Math.min(s,80):Math.min(s,65)-5;
+  else s=treaty?s:Math.min(s,75)-15;
+  return Math.max(10,s)}
+const taxScore=k=>{const os=S.orig&&S.orig.length?S.orig:["ca"];return os.reduce((a,o)=>a+taxFor(k,o),0)/os.length};
+const LL=o=>o[S.lang]||o.fr;
 // Traductions anglaises des données (clé = texte français)
 const EN={
 "Tempêtes de verglas, blizzards":"Ice storms, blizzards","Blizzards, orages":"Blizzards, thunderstorms","Rivières atmosphériques, séismes":"Atmospheric rivers, earthquakes","Blizzards, verglas":"Blizzards, freezing rain","Canicules":"Heat waves","Canicules, orages":"Heat waves, thunderstorms","Épisodes méditerranéens":"Mediterranean storm events","Épisodes cévenols, canicules":"Flash-flood storms, heat waves","Tempêtes atlantiques, submersion":"Atlantic storms, coastal flooding","Tempêtes, fortes pluies":"Storms, heavy rain","Tempêtes atlantiques":"Atlantic storms","Mistral, feux de forêt, canicules":"Mistral wind, wildfires, heat waves","Épisodes méditerranéens, submersion":"Mediterranean storms, coastal flooding","Orages, épisodes neigeux":"Thunderstorms, snow events","Orages":"Thunderstorms","Neige, crues torrentielles":"Snow, flash floods","Canicules, séismes":"Heat waves, earthquakes","Canicules, sécheresse":"Heat waves, drought","Feux de forêt, canicules":"Wildfires, heat waves","Feux de forêt, fortes pluies":"Wildfires, heavy rain","Canicules extrêmes":"Extreme heat waves","Inondations (DANA)":"Floods (DANA storms)","Brouillard, orages":"Fog, thunderstorms","Canicules, inondations":"Heat waves, floods","Inondations, canicules":"Floods, heat waves","Mousson, vagues de froid":"Monsoon, cold snaps","Typhons":"Typhoons","Mousson":"Monsoon","Séismes, typhons":"Earthquakes, typhoons","Séismes, typhons, chaleur":"Earthquakes, typhoons, heat","Chaleur humide estivale":"Humid summer heat","Typhons, pluies diluviennes":"Typhoons, torrential rain","Neige abondante":"Heavy snowfall","Typhons, séismes":"Typhoons, earthquakes","Inondations urbaines":"Urban flooding","Typhons, inondations":"Typhoons, floods","Inondations, typhons":"Floods, typhoons","Inondations, chaleur":"Floods, heat","Smog de brûlis (mars–avril)":"Burning-season smog (March–April)","Inondations":"Floods","Chaleur":"Heat","Inondations éclair":"Flash floods","Fortes pluies":"Heavy rain","Séismes":"Earthquakes","Orages violents":"Severe thunderstorms","Ouragans, chaleur":"Hurricanes, heat","Ouragans":"Hurricanes","Sécheresse":"Drought","Séismes, glissements de terrain":"Earthquakes, landslides","Chaleur, sécheresse saisonnière":"Heat, seasonal drought","Fortes pluies, crues":"Heavy rain, floods","Ouragans, pannes électriques":"Hurricanes, power outages","Ouragans, séismes":"Hurricanes, earthquakes",
@@ -443,15 +465,15 @@ const UI={
   ppg:"Vos passeports (plusieurs choix possibles)",ppn:{ca:"Canadien",eu:"Français / UE",us:"Américain"},
   near:"Vol ≤ 5 h de Montréal",sortBy:"Trier par",sortL:l=>`Trier : ${l.toLowerCase()}`,global:"Indice global",
   tabs:{pays:"Pays",villes:"Villes",cmp:"Comparer"},weights:"Pondération de l’indice global",
-  idx:{cout:"Coût de la vie",secu:"Sécurité",sante:"Système de santé",air:"Qualité de l’air",infra:"Infrastructures",anglais:"Niveau d’anglais",clim:"Climat",visa:"Visa et résidence"},
-  short:{cout:"Coût",secu:"Sécu.",sante:"Santé",air:"Air",infra:"Infra",anglais:"Anglais",clim:"Climat",visa:"Visa"},
+  idx:{cout:"Coût de la vie",secu:"Sécurité",sante:"Système de santé",air:"Qualité de l’air",infra:"Infrastructures",anglais:"Niveau d’anglais",clim:"Climat",visa:"Visa et résidence",fisc:"Fiscalité des revenus étrangers"},
+  short:{cout:"Coût",secu:"Sécu.",sante:"Santé",air:"Air",infra:"Infra",anglais:"Angl.",clim:"Climat",visa:"Visa",fisc:"Impôt"},
   cost:{loyer:"Loyer (centre-ville)",el:"Électricité",net:"Internet",mob:"Mobile",car:"Transport (taxi, VTC, essence)",pt:"Transport public",food:"Nourriture",hi:"Assurance habitation",ins:"Assurance santé",hc:"Frais de santé"},
   city:"Ville",index:"Indice",perMonth:"Coût / mois",add:"Comparer",added:"Ajoutée",remove:"Retirer",
   fab:n=>`Comparer ${n} villes`,range:(a,b)=>`${a} à ${b} par mois`,visa:"Visa : ",stamp:v=>`Indice global ${v} sur 100`,
   empty:"Touchez + à côté d’une ville pour l’ajouter. Vous pouvez comparer jusqu’à 4 villes côte à côte.",browse:"Parcourir les villes",yours:"Votre ville",vs:n=>`vs ${n}`,pct:p=>`${p>0?"+":"−"}${Math.abs(p)} %`,same:"≈ même coût",
   refLabel:"Référence",scope:k=>`Top 5 pays par continent · 5 villes par pays · tri : ${k}`,
   homeCity:"Votre ville actuelle",homeCost:"Votre budget mensuel actuel (facultatif)",homeHint:"Laissez vide pour utiliser l’estimation de l’app pour votre ville.",
-  conts:"Continents",contHint:"Un ou plusieurs",restart:"Relancer l’assistant",theme:"Apparence",ths:{auto:"Auto",light:"Clair",dark:"Sombre"},
+  conts:"Continents",contHint:"Un ou plusieurs",restart:"Relancer l’assistant",origL:"Vos revenus de retraite viennent de",origHint:"Cochez les deux si vous aurez des pensions canadiennes et françaises.",taxGrp:"Fiscalité des revenus étrangers",taxLocal:"Régime sur place",taxFrom:n=>`Revenus ${n}`,treaty:"Convention fiscale",noTreaty:"Pas de convention fiscale",homeTax:"Pays d’origine : imposition normale de résident",taxScore:"Score fiscalité",originRules:n=>`Règles au départ ${n}`,theme:"Apparence",ths:{auto:"Auto",light:"Clair",dark:"Sombre"},
   wz:{steps:["Bienvenue","Votre situation","Vos passeports","Où aimeriez-vous vivre ?","Ce qui compte pour vous"],
     title:"Trouvez votre prochaine ville",
     intro:"Quelques questions, et l’app classe les pays et les villes selon vos priorités, en les comparant à votre ville actuelle.",
@@ -463,7 +485,7 @@ const UI={
   dCost:"Écart de coût vs votre ville",estim:"estimation app",dIdx:"Écart d’indice vs votre ville",budget:"budget saisi",lead:(n,k)=>`${n} villes · tri : ${k}`,adjust:"Ajuster",seeCities:n=>`Voir les ${n} villes`,hide:"Masquer les villes",addA:n=>`Ajouter ${n} à la comparaison`,remA:n=>`Retirer ${n} de la comparaison`,perMo:"/ mois",
   risk:["faible","modéré","élevé","très élevé"],
   r:{country:"Indice du pays",flight:"Vol depuis Montréal",costGrp:h=>`Coût mensuel (${h==="couple"?"couple, 2-3 ch.":"seul, 1 ch."})`,total:"Total",env:"Environnement et sécurité",pm:"PM2.5 (µg/m³)",poll:"Indice de pollution",crime:"Indice de criminalité",safe:"Indice de sécurité",life:"Qualité de vie",hnote:"Note santé",costScore:"Score coût de la vie",clim:"Climat (normales annuelles)",water:"Mer, lac ou montagne",cold:"Mois le plus froid (moy.)",hot:"Mois le plus chaud (moy.)",rain:"Précipitations",mmy:"mm/an",rdays:"Jours de pluie / an",sdays:"Jours de neige / an",wx:"Intempéries",risk:"risque",climScore:"Score climat",bestPp:"Meilleur passeport",vn:"Option retraité",vf:"Conditions financières",vd:"Durée / renouvellement",vpr:"Résidence permanente",vfree:"Séjour sans visa",visaScore:"Score visa et résidence"},
-  notes:["Données de référence estimées (fin 2025) à partir de sources publiques comparables : Numbeo pour les loyers, prix et sécurité, IQAir/OMS pour les PM2.5, EF EPI pour l’anglais, classements de systèmes de santé, et normales climatiques 1991–2020 des services météo nationaux. Elles ne sont pas en temps réel et varient fortement selon le quartier.",
+  notes:["Fiscalité : indications générales sur le traitement des pensions étrangères (≈ 2025-2026), pas un conseil fiscal. Les conventions, les seuils et les régimes spéciaux changent souvent : faites valider votre situation par un fiscaliste des deux pays avant de déménager.","Données de référence estimées (fin 2025) à partir de sources publiques comparables : Numbeo pour les loyers, prix et sécurité, IQAir/OMS pour les PM2.5, EF EPI pour l’anglais, classements de systèmes de santé, et normales climatiques 1991–2020 des services météo nationaux. Elles ne sont pas en temps réel et varient fortement selon le quartier.",
    "Assurance santé : coût mensuel estimé pour un résident étranger dans la cinquantaine (régime public obligatoire quand il existe, sinon assurance internationale) ; pour le Canada, couverture provinciale plus complémentaire. Climat : le score favorise un climat tempéré à doux (hiver au-dessus de 12 °C, été sous 25 °C de moyenne), peu de jours de pluie et de neige, et peu d’intempéries majeures.",
    "Visas : pour chaque pays, l’app retient le plus avantageux des passeports sélectionnés. Le score reflète la facilité d’obtenir un séjour long et une voie vers la résidence permanente. Conditions connues en 2025 ; les seuils changent souvent, à confirmer auprès du consulat avant toute décision. Temps de vol : trajet habituel le plus rapide depuis Montréal-Trudeau ; les vols saisonniers varient selon l’année. Taux fixes : 1 USD = 1,38 CAD = 0,86 EUR."]},
  en:{locale:"en-CA",title:"City Comparator",
@@ -472,15 +494,15 @@ const UI={
   ppg:"Your passports (select one or more)",ppn:{ca:"Canadian",eu:"French / EU",us:"American"},
   near:"Flight ≤ 5 h from Montreal",sortBy:"Sort by",sortL:l=>`Sort by: ${l}`,global:"Overall index",
   tabs:{pays:"Countries",villes:"Cities",cmp:"Compare"},weights:"Overall index weighting",
-  idx:{cout:"Cost of living",secu:"Safety",sante:"Healthcare system",air:"Air quality",infra:"Infrastructure",anglais:"English level",clim:"Climate",visa:"Visa and residence"},
-  short:{cout:"Cost",secu:"Safety",sante:"Health",air:"Air",infra:"Infra",anglais:"English",clim:"Climate",visa:"Visa"},
+  idx:{cout:"Cost of living",secu:"Safety",sante:"Healthcare system",air:"Air quality",infra:"Infrastructure",anglais:"English level",clim:"Climate",visa:"Visa and residence",fisc:"Taxation of foreign income"},
+  short:{cout:"Cost",secu:"Safety",sante:"Health",air:"Air",infra:"Infra",anglais:"Engl.",clim:"Climate",visa:"Visa",fisc:"Tax"},
   cost:{loyer:"Rent (city centre)",el:"Electricity",net:"Internet",mob:"Mobile",car:"Transport (taxi, ride-hailing, fuel)",pt:"Public transit",food:"Food",hi:"Home insurance",ins:"Health insurance",hc:"Healthcare costs"},
   city:"City",index:"Index",perMonth:"Cost / month",add:"Compare",added:"Added",remove:"Remove",
   fab:n=>`Compare ${n} cities`,range:(a,b)=>`${a} to ${b} per month`,visa:"Visa: ",stamp:v=>`Overall index ${v} out of 100`,
   empty:"Tap + next to a city to add it. You can compare up to 4 cities side by side.",browse:"Browse cities",yours:"Your city",vs:n=>`vs ${n}`,pct:p=>`${p>0?"+":"−"}${Math.abs(p)}%`,same:"≈ same cost",
   refLabel:"Baseline",scope:k=>`Top 5 countries per continent · 5 cities per country · sorted by ${k}`,
   homeCity:"Your current city",homeCost:"Your current monthly budget (optional)",homeHint:"Leave blank to use the app’s estimate for your city.",
-  conts:"Continents",contHint:"One or more",restart:"Restart the setup",theme:"Appearance",ths:{auto:"Auto",light:"Light",dark:"Dark"},
+  conts:"Continents",contHint:"One or more",restart:"Restart the setup",origL:"Your retirement income comes from",origHint:"Select both if you will receive Canadian and French pensions.",taxGrp:"Taxation of foreign income",taxLocal:"Local regime",taxFrom:n=>`Income from ${n}`,treaty:"Tax treaty",noTreaty:"No tax treaty",homeTax:"Home country: normal resident taxation",taxScore:"Taxation score",originRules:n=>`Rules when leaving ${n}`,theme:"Appearance",ths:{auto:"Auto",light:"Light",dark:"Dark"},
   wz:{steps:["Welcome","Your situation","Your passports","Where would you like to live?","What matters to you"],
     title:"Find your next city",
     intro:"A few questions, and the app ranks countries and cities by your priorities, compared with where you live now.",
@@ -492,20 +514,21 @@ const UI={
   dCost:"Cost difference vs your city",estim:"app estimate",dIdx:"Index difference vs your city",budget:"your budget",lead:(n,k)=>`${n} cities · sorted by ${k}`,adjust:"Adjust",seeCities:n=>`Show ${n} cities`,hide:"Hide cities",addA:n=>`Add ${n} to comparison`,remA:n=>`Remove ${n} from comparison`,perMo:"/ month",
   risk:["low","moderate","high","very high"],
   r:{country:"Country index",flight:"Flight from Montreal",costGrp:h=>`Monthly cost (${h==="couple"?"couple, 2–3 bedrooms":"single, 1 bedroom"})`,total:"Total",env:"Environment and safety",pm:"PM2.5 (µg/m³)",poll:"Pollution index",crime:"Crime index",safe:"Safety index",life:"Quality of life",hnote:"Healthcare note",costScore:"Cost of living score",clim:"Climate (annual normals)",water:"Sea, lake or mountains",cold:"Coldest month (avg.)",hot:"Warmest month (avg.)",rain:"Precipitation",mmy:"mm/yr",rdays:"Rainy days / yr",sdays:"Snow days / yr",wx:"Severe weather",risk:"risk",climScore:"Climate score",bestPp:"Best passport",vn:"Retiree option",vf:"Financial requirements",vd:"Duration / renewal",vpr:"Permanent residence",vfree:"Visa-free stay",visaScore:"Visa and residence score"},
-  notes:["Estimated reference data (late 2025) based on comparable public sources: Numbeo for rent, prices and safety, IQAir/WHO for PM2.5, EF EPI for English, healthcare system rankings, and 1991–2020 climate normals from national weather services. Figures are not real-time and vary widely by neighbourhood.",
+  notes:["Taxation: general guidance on how foreign pensions are treated (≈ 2025-2026), not tax advice. Treaties, thresholds and special regimes change often: have your situation reviewed by a tax adviser in both countries before moving.","Estimated reference data (late 2025) based on comparable public sources: Numbeo for rent, prices and safety, IQAir/WHO for PM2.5, EF EPI for English, healthcare system rankings, and 1991–2020 climate normals from national weather services. Figures are not real-time and vary widely by neighbourhood.",
    "Health insurance: estimated monthly cost for a foreign resident in their fifties (mandatory public plan where one exists, otherwise international insurance); for Canada, provincial coverage plus supplementary insurance. Climate: the score favours a temperate to mild climate (winter above 12 °C, summer below 25 °C on average), few rainy and snowy days, and little severe weather.",
    "Visas: for each country, the app uses the most favourable of the selected passports. The score reflects how easy it is to get a long stay and a path to permanent residence. Rules as known in 2025; thresholds change often, so confirm with the consulate before deciding. Flight times: usual fastest trip from Montréal-Trudeau; seasonal flights vary from year to year. Fixed rates: 1 USD = 1.38 CAD = 0.86 EUR."]}
 };
 
 const RATES={CAD:1.38,USD:1,EUR:0.86};
-const KEYS=["cout","secu","sante","air","infra","anglais","clim","visa"];
+const KEYS=["cout","secu","sante","air","infra","anglais","clim","visa","fisc"];
 const COSTK=["loyer","el","net","mob","car","pt","food","hi","ins","hc"];
 
-let S={lang:"fr",hh:"couple",cur:"CAD",view:"pays",sort:"global",w:{cout:3,secu:2,sante:2,air:1,infra:1,anglais:2,clim:2,visa:2},pps:["ca"],cmp:[],conts:CONTS.map(c=>c.id),home:"ca0",homeCost:null,onboarded:false};
+let S={lang:"fr",hh:"couple",cur:"CAD",view:"pays",sort:"global",w:{cout:3,secu:2,sante:2,air:1,infra:1,anglais:2,clim:2,visa:2,fisc:2},pps:["ca"],orig:["ca"],cmp:[],conts:CONTS.map(c=>c.id),home:"ca0",homeCost:null,onboarded:false};
 try{const s=JSON.parse(localStorage.getItem("cmpVilles")||"null");if(s)S={...S,...s,w:{...S.w,...(s.w||{})}}}catch(e){}
 if(!Array.isArray(S.pps))S.pps=S.pp==="eu"?["ca","eu"]:["ca"];
 S.pps=S.pps.filter(p=>["ca","eu","us"].includes(p));if(!S.pps.length)S.pps=["ca"];delete S.pp;
 if(!UI[S.lang])S.lang=(navigator.language||"fr").startsWith("en")?"en":"fr";
+if(S.w.fisc==null)S.w.fisc=2;S.orig=(Array.isArray(S.orig)?S.orig:["ca"]).filter(o=>o==="ca"||o==="fr");if(!S.orig.length)S.orig=["ca"];
 S.conts=(Array.isArray(S.conts)?S.conts:[]).filter(c=>CONTS.some(x=>x.id===c));if(!S.conts.length)S.conts=CONTS.map(c=>c.id);
 const save=()=>{try{localStorage.setItem("cmpVilles",JSON.stringify(S))}catch(e){}};
 
@@ -526,7 +549,7 @@ function compute(){
   const lo=Math.log(Math.min(...CITIES.map(c=>c.total))),hi=Math.log(Math.max(...CITIES.map(c=>c.total)));
   const wsum=Object.values(S.w).reduce((a,v)=>a+v,0)||1;
   CITIES.forEach(c=>{
-    c.i={cout:100*(hi-Math.log(c.total))/(hi-lo),secu:c.safe,sante:c.k.hs,air:clamp(100-(c.pm-5)*2.6),infra:c.infra,anglais:c.en,clim:climScore(c.cl),visa:c.k.vb.s};
+    c.i={cout:100*(hi-Math.log(c.total))/(hi-lo),secu:c.safe,sante:c.k.hs,air:clamp(100-(c.pm-5)*2.6),infra:c.infra,anglais:c.en,clim:climScore(c.cl),visa:c.k.vb.s,fisc:taxScore(c.k)};
     c.i.global=KEYS.reduce((a,key)=>a+S.w[key]*c.i[key],0)/wsum;
   });
   DATA.forEach(k=>{
@@ -596,6 +619,8 @@ function renderChrome(){
   document.getElementById("l-home").textContent=t.homeCity;
   document.getElementById("l-hcost").textContent=t.homeCost;
   document.getElementById("l-conts").textContent=t.conts;
+  document.getElementById("l-orig").textContent=t.origL;
+  document.getElementById("g-orig").innerHTML=ORIGINS.map(o=>`<button data-orig="${o.id}">${ico("check")}${o.f} ${LL(o)}</button>`).join("");
   document.getElementById("restartBtn").textContent=t.restart;
   document.getElementById("l-theme").textContent=t.theme;document.getElementById("g-theme").setAttribute("aria-label",t.theme);
   document.querySelectorAll("[data-th]").forEach(b=>b.textContent=t.ths[b.dataset.th]);
@@ -620,6 +645,7 @@ function render(){
   document.getElementById("t-lead").innerHTML=`<span class="ref">${ico("pin")}<span><b>${homeName()}</b> · ${money(HT)} ${t.perMo}${S.homeCost?` (${t.budget})`:""} · ${t.index.toLowerCase()} ${Math.round(HOME.i.global)}</span></span><small>${t.scope((S.sort==="global"?t.global:t.idx[S.sort]).toLowerCase())}</small>`;
   document.querySelectorAll("[data-cont]").forEach(b=>b.setAttribute("aria-pressed",S.conts.includes(b.dataset.cont)));
   document.querySelectorAll("[data-th]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.th===(S.theme||"auto")));
+  document.querySelectorAll("[data-orig]").forEach(b=>b.setAttribute("aria-pressed",S.orig.includes(b.dataset.orig)));
   document.querySelectorAll(".homeSel").forEach(x=>{if(x.value!==HOME.id)x.value=HOME.id});
   document.querySelectorAll(".homeCost").forEach(x=>{if(document.activeElement!==x)x.value=S.homeCost?Math.round(S.homeCost*RATES[S.cur]):"";x.placeholder=money(HOME.total);const u=x.parentNode.querySelector(".unit");if(u)u.textContent=S.cur});
   document.querySelector("#leadAdj span").textContent=t.adjust;
@@ -642,6 +668,7 @@ function render(){
             </div>
             <span class="rank">#${r+1}</span>
           </div>
+          <p class="cvisa"><strong>${t.short.fisc}</strong><span>${TAX[k.id]?LL(TAX[k.id].r):"—"}</span></p>
           <p class="cvisa"><strong>${t.short.visa}</strong><span>${vtx(k,"n")}${S.pps.length>1?` · ${ppTag(k)}`:""}</span></p>
           <div class="metrics">${KEYS.map(x=>{const v=Math.round(k.i[x]);return `<div class="m"><div><span>${t.short[x]}</span><b>${v}</b></div><i><span class="f-${tone(v)}" style="width:${v}%"></span></i></div>`}).join("")}</div>
           <div class="more"><span class="lbl-more">${openIds.includes(k.id)?t.hide:t.seeCities(k.cs.length)}</span>${ico("chev")}</div>
@@ -698,7 +725,14 @@ function render(){
       ${txt(R.bestPp,c=>ppTag(c.k),96,true)}
       ${[["n",R.vn],["f",R.vf],["d",R.vd],["pr",R.vpr],["free",R.vfree]].map(([f,l])=>txt(l,c=>vtx(c.k,f),120,true)).join("")}
       ${row(R.visaScore,cs.map(c=>c.i.visa),r,"high")}
-      </tbody></table></div></div>`;
+      ${grp(t.taxGrp)}
+      ${txt(t.taxLocal,c=>TAX[c.k.id]?LL(TAX[c.k.id].r):"—",140,true)}
+      ${S.orig.map(o=>{const O=ORIGINS.find(x=>x.id===o);return txt(`${O.f} ${t.taxFrom(LL(O.of))}`,c=>c.k.id===o?`<span class="cmeta">${t.homeTax}</span>`:(TAX[c.k.id]&&TAX[c.k.id][o]?`<span class="dl dn">${t.treaty}</span>`:`<span class="dl up">${t.noTreaty}</span>`)+`<br><span class="num">${Math.round(taxFor(c.k,o))}</span>`,110,true)}).join("")}
+      ${row(t.taxScore,cs.map(c=>c.i.fisc),r,"high")}
+
+      </tbody></table></div>
+      ${S.orig.map(o=>{const O=ORIGINS.find(x=>x.id===o);return `<div class="orule"><strong>${O.f} ${t.originRules(LL(O.lv))}</strong><ul>${LL(ORIG_NOTES[o]).map(x=>`<li>${x}</li>`).join("")}</ul></div>`}).join("")}
+    </div>`;
   }
 }
 
@@ -748,6 +782,7 @@ function renderWiz(){
     ()=>`<h2 id="wz-title">${z.steps[1]}</h2><p class="wz-p">${z.sit}</p>
       <p class="lbl">${t.homeCity}</p><div class="field"><select class="homeSel" aria-label="${t.homeCity}">${homeOptions()}</select></div>
       <p class="lbl">${t.homeCost}</p><div class="field money-in"><input class="homeCost" type="number" inputmode="numeric" min="0" step="50" aria-label="${t.homeCost}"><span class="unit">${S.cur}</span></div><p class="hint">${t.homeHint}</p>
+      <p class="lbl">${t.origL}</p><div class="chips big">${ORIGINS.map(o=>`<button data-orig="${o.id}">${ico("check")}${o.f} ${LL(o)}</button>`).join("")}</div><p class="hint">${t.origHint}</p>
       <p class="lbl">${t.hh}</p>${seg("hh",["solo","couple"],v=>t.hhs[v])}
       <p class="lbl">${t.cur}</p>${seg("cur",["CAD","USD","EUR"],v=>v)}`,
     ()=>`<h2 id="wz-title">${z.steps[2]}</h2><p class="wz-p">${z.pp}</p>
@@ -776,7 +811,8 @@ document.addEventListener("input",e=>{
   if(x.classList&&x.classList.contains("homeCost")){const v=parseFloat(x.value);S.homeCost=v>0?v/RATES[S.cur]:null;save();render()}
 });
 document.addEventListener("click",e=>{
-  const b=e.target.closest("[data-wiz],[data-cont],[data-th]");if(!b)return;
+  const b=e.target.closest("[data-wiz],[data-cont],[data-th],[data-orig]");if(!b)return;
+  if(b.dataset.orig){const o=b.dataset.orig,i=S.orig.indexOf(o);if(i<0)S.orig.push(o);else if(S.orig.length>1)S.orig.splice(i,1);save();render();return}
   if(b.dataset.th){S.theme=b.dataset.th;applyTheme();save();render();return}
   if(b.dataset.cont){const c=b.dataset.cont,i=S.conts.indexOf(c);if(i<0)S.conts.push(c);else if(S.conts.length>1)S.conts.splice(i,1);save();render();return}
   const a=b.dataset.wiz;
